@@ -1,0 +1,14 @@
+config/local.config.json
+config/test.config.json
+build/
+.DS_Store
+# Never commit real credentials
+*.secret
+*.key
+
+# Xcode local/user state
+DerivedData/
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/

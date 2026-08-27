@@ -1,0 +1,5 @@
+{
+  "apiKey": "<your Sensibo API key>",
+  "baseURL": "https://home.sensibo.com/api/v2",
+  "mockMode": false
+}

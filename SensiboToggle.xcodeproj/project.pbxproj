@@ -1,0 +1,724 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		113BD7F9DA76D2E2B54A1F2C /* ModelAndConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B9878E813CC65A62B7A19 /* ModelAndConfigTests.swift */; };
+		26E2C1188AAB46B9081B8AF3 /* ACController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15AF54B196757D7B16A67AB /* ACController.swift */; };
+		272506CB26BDD2572ED9A9DC /* BackoffPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12B69D07557FF38F9593772 /* BackoffPolicyTests.swift */; };
+		315F6762292128F167B2EE4C /* BedroomOneWidgetSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C31304EFCEC0915C1A596D01 /* BedroomOneWidgetSupport.swift */; };
+		5E52D422621BCB1475CC8A6D /* SensiboIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72D9FEEAEB70E7B51D520C11 /* SensiboIntegrationTests.swift */; };
+		5F9ABEFD7173D8028AF18C18 /* BedroomOneWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C42A3FDF784A3A3F245AA741 /* BedroomOneWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		62D7E8E962D8F1E3C75E1070 /* SensiboUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEE2F377FB308698C84C75F6 /* SensiboUITests.swift */; };
+		6F8BA9D2B39C6D0AE6B98906 /* BedroomOneWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B35DC47BC31583AED9054ED /* BedroomOneWidget.swift */; };
+		719A01D8AFE07FD946AA3B51 /* local.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 13CB4B19F3F8B99217847340 /* local.config.json */; };
+		8D16B8E4696737AC350CAD65 /* SensiboClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B582D470FBB330F717BEEF /* SensiboClient.swift */; };
+		A1B2C3D4E5F60718293A4B5C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B1C2D3E4F5061728394A5B6C /* Assets.xcassets */; };
+		AAFFAC9DC6AD11F6AE18AF50 /* BedroomOneWidgetSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C31304EFCEC0915C1A596D01 /* BedroomOneWidgetSupport.swift */; };
+		B20CEB3843EC07E3F1CAE8D4 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A16FAEFA690B374A066998 /* Models.swift */; };
+		D02E795226EBBA971569B8D9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E693F93B57959CA1C4601B9C /* ContentView.swift */; };
+		D14E43BB936D85247A26794B /* local.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 13CB4B19F3F8B99217847340 /* local.config.json */; };
+		EF01BA3CB9F0AC95610879A0 /* SensiboToggleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E42BD04DC4E867FB3F6DB8CB /* SensiboToggleApp.swift */; };
+		EFB86685ADB6E43E01AD6DED /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1395B93A7E84334548E74AB6 /* Config.swift */; };
+		F18A0865AEEC544480FED73C /* ControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631CD0FDFC7ABB1E8DA27F97 /* ControllerTests.swift */; };
+		F6F1231613BA76FB2026B41A /* MockSensiboClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F09FE865495208C5BBD3F3 /* MockSensiboClient.swift */; };
+		FB6076983D710A1840E9C4C3 /* local.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 13CB4B19F3F8B99217847340 /* local.config.json */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		35F7D030F5E71A310719CB7C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1811F3BB5426B480EC7FC94F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5DF0F5C66489B6C2467C288A;
+			remoteInfo = BedroomOneWidgetExtension;
+		};
+		48637E7C3C081F945AB8EC04 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1811F3BB5426B480EC7FC94F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1BE1C9AF2B7B6BE21858FA55;
+			remoteInfo = SensiboToggle;
+		};
+		D6E07172C1D5B775202D1BD0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1811F3BB5426B480EC7FC94F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1BE1C9AF2B7B6BE21858FA55;
+			remoteInfo = SensiboToggle;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3847354B11A9B72B5C4F0387 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				5F9ABEFD7173D8028AF18C18 /* BedroomOneWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		1395B93A7E84334548E74AB6 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		13CB4B19F3F8B99217847340 /* local.config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = local.config.json; sourceTree = "<group>"; };
+		1B35DC47BC31583AED9054ED /* BedroomOneWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BedroomOneWidget.swift; sourceTree = "<group>"; };
+		45B582D470FBB330F717BEEF /* SensiboClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensiboClient.swift; sourceTree = "<group>"; };
+		631CD0FDFC7ABB1E8DA27F97 /* ControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerTests.swift; sourceTree = "<group>"; };
+		72D9FEEAEB70E7B51D520C11 /* SensiboIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensiboIntegrationTests.swift; sourceTree = "<group>"; };
+		95A16FAEFA690B374A066998 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		B1C2D3E4F5061728394A5B6C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B81CEAC59B506E32932B4C3E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		BE19A2A7C377C191645A7970 /* SensiboToggle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SensiboToggle.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2D483D876E7898B6BA736B8 /* SensiboUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SensiboUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C31304EFCEC0915C1A596D01 /* BedroomOneWidgetSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BedroomOneWidgetSupport.swift; sourceTree = "<group>"; };
+		C42A3FDF784A3A3F245AA741 /* BedroomOneWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BedroomOneWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD911F106829226C96E00717 /* SensiboTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SensiboTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E12B69D07557FF38F9593772 /* BackoffPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackoffPolicyTests.swift; sourceTree = "<group>"; };
+		E15AF54B196757D7B16A67AB /* ACController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACController.swift; sourceTree = "<group>"; };
+		E42BD04DC4E867FB3F6DB8CB /* SensiboToggleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensiboToggleApp.swift; sourceTree = "<group>"; };
+		E5F09FE865495208C5BBD3F3 /* MockSensiboClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSensiboClient.swift; sourceTree = "<group>"; };
+		E693F93B57959CA1C4601B9C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E95B9878E813CC65A62B7A19 /* ModelAndConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelAndConfigTests.swift; sourceTree = "<group>"; };
+		FC8FB808C5FC9E5553F341CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FEE2F377FB308698C84C75F6 /* SensiboUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensiboUITests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		1324E61168DEDFF32C2F2A59 /* BedroomOneWidget */ = {
+			isa = PBXGroup;
+			children = (
+				1B35DC47BC31583AED9054ED /* BedroomOneWidget.swift */,
+				FC8FB808C5FC9E5553F341CF /* Info.plist */,
+			);
+			path = BedroomOneWidget;
+			sourceTree = "<group>";
+		};
+		4DC5F7F6E8564FABE961A677 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				FEE2F377FB308698C84C75F6 /* SensiboUITests.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		7AA6463CBB1400234CBF88D2 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				4DC5F7F6E8564FABE961A677 /* UI */,
+				8C15FE10B4B51F0EA393F3AF /* Unit */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		8C15FE10B4B51F0EA393F3AF /* Unit */ = {
+			isa = PBXGroup;
+			children = (
+				E12B69D07557FF38F9593772 /* BackoffPolicyTests.swift */,
+				631CD0FDFC7ABB1E8DA27F97 /* ControllerTests.swift */,
+				E95B9878E813CC65A62B7A19 /* ModelAndConfigTests.swift */,
+				72D9FEEAEB70E7B51D520C11 /* SensiboIntegrationTests.swift */,
+			);
+			path = Unit;
+			sourceTree = "<group>";
+		};
+		AD1A54BC870F769AB2BC2DFA /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				E15AF54B196757D7B16A67AB /* ACController.swift */,
+				C31304EFCEC0915C1A596D01 /* BedroomOneWidgetSupport.swift */,
+				1395B93A7E84334548E74AB6 /* Config.swift */,
+				E693F93B57959CA1C4601B9C /* ContentView.swift */,
+				B81CEAC59B506E32932B4C3E /* Info.plist */,
+				B1C2D3E4F5061728394A5B6C /* Assets.xcassets */,
+				E5F09FE865495208C5BBD3F3 /* MockSensiboClient.swift */,
+				95A16FAEFA690B374A066998 /* Models.swift */,
+				45B582D470FBB330F717BEEF /* SensiboClient.swift */,
+				E42BD04DC4E867FB3F6DB8CB /* SensiboToggleApp.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		B3922BCE1C16AECFCD7B0B89 = {
+			isa = PBXGroup;
+			children = (
+				F5914A2798D2BA34F181271D /* config */,
+				AD1A54BC870F769AB2BC2DFA /* Sources */,
+				1324E61168DEDFF32C2F2A59 /* BedroomOneWidget */,
+				7AA6463CBB1400234CBF88D2 /* Tests */,
+				C641ACB6F68A0B08E7F40B94 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C641ACB6F68A0B08E7F40B94 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CD911F106829226C96E00717 /* SensiboTests.xctest */,
+				BE19A2A7C377C191645A7970 /* SensiboToggle.app */,
+				C42A3FDF784A3A3F245AA741 /* BedroomOneWidgetExtension.appex */,
+				C2D483D876E7898B6BA736B8 /* SensiboUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F5914A2798D2BA34F181271D /* config */ = {
+			isa = PBXGroup;
+			children = (
+				13CB4B19F3F8B99217847340 /* local.config.json */,
+			);
+			path = config;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1BE1C9AF2B7B6BE21858FA55 /* SensiboToggle */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C887EBF1C7A114195092B3AD /* Build configuration list for PBXNativeTarget "SensiboToggle" */;
+			buildPhases = (
+				F0DF43B3B53814A5AE07D7C5 /* Sources */,
+				989D6F2F7F7F0CFAC0A38F95 /* Resources */,
+				3847354B11A9B72B5C4F0387 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8E3D7049033BB2E1D3AB7971 /* PBXTargetDependency */,
+			);
+			name = SensiboToggle;
+			packageProductDependencies = (
+			);
+			productName = SensiboToggle;
+			productReference = BE19A2A7C377C191645A7970 /* SensiboToggle.app */;
+			productType = "com.apple.product-type.application";
+		};
+		5694A0B5900EBD5D30667DB1 /* SensiboUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8FF43887A4293B2AC9618F0E /* Build configuration list for PBXNativeTarget "SensiboUITests" */;
+			buildPhases = (
+				494BF0ED44D95F623051492D /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AA97940D69353140A8DF4976 /* PBXTargetDependency */,
+			);
+			name = SensiboUITests;
+			packageProductDependencies = (
+			);
+			productName = SensiboUITests;
+			productReference = C2D483D876E7898B6BA736B8 /* SensiboUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		5DF0F5C66489B6C2467C288A /* BedroomOneWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B9AA4C4CC86B17E5EB237C54 /* Build configuration list for PBXNativeTarget "BedroomOneWidgetExtension" */;
+			buildPhases = (
+				91ADB514B29C0CF8432D6CB2 /* Sources */,
+				BA073E70491E64BD639D3250 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BedroomOneWidgetExtension;
+			packageProductDependencies = (
+			);
+			productName = BedroomOneWidgetExtension;
+			productReference = C42A3FDF784A3A3F245AA741 /* BedroomOneWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		BDAC8E4C3AAF1F4BF57CA234 /* SensiboTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DE2DC286982D8A5C2E8AC876 /* Build configuration list for PBXNativeTarget "SensiboTests" */;
+			buildPhases = (
+				72156AC3E474A9D9F5AC909B /* Sources */,
+				256744338094B22C6275048B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				60EB7217465D9B9D2E6D0E3E /* PBXTargetDependency */,
+			);
+			name = SensiboTests;
+			packageProductDependencies = (
+			);
+			productName = SensiboTests;
+			productReference = CD911F106829226C96E00717 /* SensiboTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1811F3BB5426B480EC7FC94F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 2660;
+				TargetAttributes = {
+					5694A0B5900EBD5D30667DB1 = {
+						DevelopmentTeam = "";
+						TestTargetID = 1BE1C9AF2B7B6BE21858FA55;
+					};
+					BDAC8E4C3AAF1F4BF57CA234 = {
+						DevelopmentTeam = "";
+					};
+				};
+			};
+			buildConfigurationList = C250A8CA7B0C2C4163DF7044 /* Build configuration list for PBXProject "SensiboToggle" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = B3922BCE1C16AECFCD7B0B89;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = C641ACB6F68A0B08E7F40B94 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1BE1C9AF2B7B6BE21858FA55 /* SensiboToggle */,
+				5DF0F5C66489B6C2467C288A /* BedroomOneWidgetExtension */,
+				BDAC8E4C3AAF1F4BF57CA234 /* SensiboTests */,
+				5694A0B5900EBD5D30667DB1 /* SensiboUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		256744338094B22C6275048B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FB6076983D710A1840E9C4C3 /* local.config.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		989D6F2F7F7F0CFAC0A38F95 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1B2C3D4E5F60718293A4B5C /* Assets.xcassets in Resources */,
+				D14E43BB936D85247A26794B /* local.config.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BA073E70491E64BD639D3250 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				719A01D8AFE07FD946AA3B51 /* local.config.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		494BF0ED44D95F623051492D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				62D7E8E962D8F1E3C75E1070 /* SensiboUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		72156AC3E474A9D9F5AC909B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				272506CB26BDD2572ED9A9DC /* BackoffPolicyTests.swift in Sources */,
+				F18A0865AEEC544480FED73C /* ControllerTests.swift in Sources */,
+				113BD7F9DA76D2E2B54A1F2C /* ModelAndConfigTests.swift in Sources */,
+				5E52D422621BCB1475CC8A6D /* SensiboIntegrationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		91ADB514B29C0CF8432D6CB2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F8BA9D2B39C6D0AE6B98906 /* BedroomOneWidget.swift in Sources */,
+				315F6762292128F167B2EE4C /* BedroomOneWidgetSupport.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F0DF43B3B53814A5AE07D7C5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				26E2C1188AAB46B9081B8AF3 /* ACController.swift in Sources */,
+				AAFFAC9DC6AD11F6AE18AF50 /* BedroomOneWidgetSupport.swift in Sources */,
+				EFB86685ADB6E43E01AD6DED /* Config.swift in Sources */,
+				D02E795226EBBA971569B8D9 /* ContentView.swift in Sources */,
+				F6F1231613BA76FB2026B41A /* MockSensiboClient.swift in Sources */,
+				B20CEB3843EC07E3F1CAE8D4 /* Models.swift in Sources */,
+				8D16B8E4696737AC350CAD65 /* SensiboClient.swift in Sources */,
+				EF01BA3CB9F0AC95610879A0 /* SensiboToggleApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		60EB7217465D9B9D2E6D0E3E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1BE1C9AF2B7B6BE21858FA55 /* SensiboToggle */;
+			targetProxy = D6E07172C1D5B775202D1BD0 /* PBXContainerItemProxy */;
+		};
+		8E3D7049033BB2E1D3AB7971 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5DF0F5C66489B6C2467C288A /* BedroomOneWidgetExtension */;
+			targetProxy = 35F7D030F5E71A310719CB7C /* PBXContainerItemProxy */;
+		};
+		AA97940D69353140A8DF4976 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1BE1C9AF2B7B6BE21858FA55 /* SensiboToggle */;
+			targetProxy = 48637E7C3C081F945AB8EC04 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		09B9320BA534DACC78954224 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.a.SensiboTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SensiboToggle.app/SensiboToggle";
+			};
+			name = Release;
+		};
+		292EC2A5A54ED87777D68A8A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = NZ986T2DCH;
+				INFOPLIST_FILE = Sources/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.a.SensiboToggle;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		4C69CA7149C74157F71E120A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		79B86411EA8952406ECDDA77 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = NZ986T2DCH;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BedroomOneWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.a.SensiboToggle.BedroomOneWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B27A33F4C5A225D86099EEBA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = NZ986T2DCH;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BedroomOneWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.a.SensiboToggle.BedroomOneWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		BDCF599EB6E3F83CDF9164D4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.a.SensiboUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SensiboToggle;
+			};
+			name = Debug;
+		};
+		DA992FCBFF1F8B596D119415 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = NZ986T2DCH;
+				INFOPLIST_FILE = Sources/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.a.SensiboToggle;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		E8503405B5E0B3D1AA68C212 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		F77B2F3FBBF0EB637B86004F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.a.SensiboUITests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = SensiboToggle;
+			};
+			name = Release;
+		};
+		F94E3D7D7A6D0ABBEAEDE7A6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.a.SensiboTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SensiboToggle.app/SensiboToggle";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8FF43887A4293B2AC9618F0E /* Build configuration list for PBXNativeTarget "SensiboUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BDCF599EB6E3F83CDF9164D4 /* Debug */,
+				F77B2F3FBBF0EB637B86004F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B9AA4C4CC86B17E5EB237C54 /* Build configuration list for PBXNativeTarget "BedroomOneWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				79B86411EA8952406ECDDA77 /* Debug */,
+				B27A33F4C5A225D86099EEBA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C250A8CA7B0C2C4163DF7044 /* Build configuration list for PBXProject "SensiboToggle" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4C69CA7149C74157F71E120A /* Debug */,
+				E8503405B5E0B3D1AA68C212 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C887EBF1C7A114195092B3AD /* Build configuration list for PBXNativeTarget "SensiboToggle" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				292EC2A5A54ED87777D68A8A /* Debug */,
+				DA992FCBFF1F8B596D119415 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DE2DC286982D8A5C2E8AC876 /* Build configuration list for PBXNativeTarget "SensiboTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F94E3D7D7A6D0ABBEAEDE7A6 /* Debug */,
+				09B9320BA534DACC78954224 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1811F3BB5426B480EC7FC94F /* Project object */;
+}
