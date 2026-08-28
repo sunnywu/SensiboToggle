@@ -70,3 +70,37 @@ final class SensiboUITests: XCTestCase {
         XCTAssertEqual(element.value as? String, target, "toggle did not reach \(on)")
            }
 }
+
+// MARK: - Wall-panel kiosk UI (blank-on-idle / wake-on-tap)
+//
+// End-to-end proof that the kiosk panel goes fully blank after the idle delay and
+// a single tap anywhere wakes it back to the dashboard. Kept hermetic: mock data
+// only, so it never touches a real device. A short idle keeps it fast.
+final class WallPanelUITests: XCTestCase {
+    private var app: XCUIApplication!
+
+    override func setUpWithError() throws {
+        continueAfterFailure = true
+        app = XCUIApplication()
+        app.launchEnvironment = [
+             "SENSIBO_MOCK": "1",
+             "WALL_PANEL": "1",
+             "WALL_PANEL_IDLE_SECONDS": "3",
+         ]
+        app.launch()
+     }
+
+    override func tearDownWithError() throws {
+        app.terminate()
+     }
+
+    func testBlankThenWakesOnTap() throws {
+        let overlay = app.descendants(matching: .any)["wall.blank.overlay"]
+         // After the idle delay the panel must go fully blank.
+        XCTAssertTrue(overlay.waitForExistence(timeout: 5), "kiosk blank overlay should appear after the idle delay")
+         // A single tap anywhere wakes it; the overlay disappears and the dashboard returns.
+        overlay.tap()
+        XCTAssertFalse(overlay.exists, "a tap must wake the panel (overlay removed)")
+        XCTAssertTrue(app.switches.firstMatch.waitForExistence(timeout: 3), "dashboard returns after waking")
+     }
+}

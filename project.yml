@@ -21,6 +21,7 @@ targets:
        - path: Sources/ACController.swift
        - path: Sources/BedroomOneWidgetSupport.swift
        - path: Sources/Config.swift
+       - path: Sources/IdleDimmingController.swift
        - path: Sources/ContentView.swift
        - path: Sources/MockSensiboClient.swift
        - path: Sources/Models.swift
@@ -98,6 +99,7 @@ targets:
        - path: Tests/Unit/BackoffPolicyTests.swift
        - path: Tests/Unit/ControllerTests.swift
        - path: Tests/Unit/ModelAndConfigTests.swift
+       - path: Tests/Unit/IdleDimmingControllerTests.swift
        - path: Tests/Unit/SensiboIntegrationTests.swift
        - path: Tests/Unit/TapoControllerTests.swift
        - path: Tests/Unit/TapoCryptoTests.swift

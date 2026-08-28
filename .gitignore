@@ -1,4 +1,5 @@
 config/local.config.json
+config/local.config.json.*
 config/test.config.json
 build/
 .DS_Store
