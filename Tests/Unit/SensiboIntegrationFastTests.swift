@@ -8,6 +8,9 @@ final class SensiboIntegrationFastTests: XCTestCase {
     
     /// Test that validates end-to-end API connectivity using the provided key
     func testAPIConnectivityWithProvidedKey() async throws {
+        guard ProcessInfo.processInfo.environment["RUN_SENSIBO_LIVE_TESTS"] == "1" else {
+            throw XCTSkip("live Sensibo tests are opt-in because they can reach real devices")
+        }
         // Using the provided API key directly in our test environment
         guard let apiKey = ProcessInfo.processInfo.environment["SENSIBO_LIVE_KEY"], !apiKey.isEmpty else {
             throw XCTSkip("no live Sensibo key configured")
@@ -30,6 +33,9 @@ final class SensiboIntegrationFastTests: XCTestCase {
     
     /// Test that the set temperature functionality works with the real API
     func testTemperatureControlWithRealAPI() async throws {
+        guard ProcessInfo.processInfo.environment["RUN_SENSIBO_LIVE_TESTS"] == "1" else {
+            throw XCTSkip("live Sensibo tests are opt-in because they can change real devices")
+        }
         guard let apiKey = ProcessInfo.processInfo.environment["SENSIBO_LIVE_KEY"], !apiKey.isEmpty else {
             throw XCTSkip("no live Sensibo key configured")
         }

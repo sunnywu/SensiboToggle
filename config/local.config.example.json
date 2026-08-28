@@ -1,5 +1,12 @@
 {
-  "apiKey": "<your Sensibo API key>",
-  "baseURL": "https://home.sensibo.com/api/v2",
-  "mockMode": false
+   "apiKey": "<your Sensibo API key>",
+   "baseURL": "https://home.sensibo.com/api/v2",
+   "mockMode": false,
+   "tapo": {
+     "email": "<your Tapo/Kasa account email>",
+     "password": "<your Tapo password>",
+     "devices": [
+      { "name": "verandah light", "ip": "<local IP, e.g. 192.168.1.50>", "type": "L535" }
+     ]
+   }
 }

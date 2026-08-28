@@ -105,6 +105,49 @@ xcrun simctl io booted screenshot build/sensibo-iphone17.png
 
 `No display specified` is normal when the simulator has one display.
 
+## Menu Bar Target
+
+The `macos-menubar` branch offers a front-end *alternative* to the home-screen
+widget: a **resident menu-bar app** (`MenuBarExtra`, macOS 14+) that pins a
+toggle to the status bar, so the AC can be flipped on/off without placing a
+widget. It reuses the **identical core** (`ACController` + `SensiboClient` /
+`MockSensiboClient` / `Config`), so behaviour (optimistic toggle, mock mode,
+live mode) is the same.
+
+- `SensiboToggleMenuBar` (application, scheme `SensiboToggleMenuBar`, product
+   `SensiboMenuBar.app`, id `com.a.SensiboToggle.MenuBar`) — a menu-bar-only
+   agent (`LSUIElement`: no Dock icon). Its `MenuBar/Info.plist` is
+   hand-maintained and protected from xcodegen (`INFOPLIST_FILE` +
+   `GENERATE_INFOPLIST_FILE: NO`, `info:` omitted) exactly like the widget plists.
+- Sources: `Sources/MenuBar/SensiboMenuBarApp.swift` (`@main`, `MenuBarExtra`)
+   and `Sources/MenuBar/SensiboMenuBarView.swift` (one toggle row per AC). The
+   bar icon flips `flame` → `flame.fill` to show on/off at a glance.
+
+Build:
+
+```sh
+cd /Users/a/SensiboToggle
+xcodebuild -quiet \
+  -project SensiboToggle.xcodeproj \
+     -scheme SensiboToggleMenuBar \
+      -destination 'platform=macOS,arch=arm64' \
+     -derivedDataPath build/macOS-DerivedData \
+  build
+```
+
+Launch WITHOUT affecting the physical AC (mock mode):
+
+```sh
+cd /Users/a/SensiboToggle
+SENSIBO_MOCK=1 \
+  build/macOS-DerivedData/Build/Products/Debug/SensiboMenuBar.app/Contents/MacOS/SensiboMenuBar
+```
+
+Real mode = launch without `SENSIBO_MOCK=1`; the agent then reads the
+secret-bearing `config/local.config.json` and a toggle changes the physical AC.
+Set `SENSIBO_API_KEY` only with user approval. To quit the agent:
+`pkill -f SensiboMenuBar`.
+
 ## Safe Tests
 
 The full test scheme includes live integration paths that may touch the Sensibo API and can change real device state. Prefer the hermetic controller tests and mock-mode UI tests unless the user explicitly approves live testing.

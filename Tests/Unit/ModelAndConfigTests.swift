@@ -40,6 +40,45 @@ final class ModelAndConfigTests: XCTestCase {
         XCTAssertFalse(config.mockMode)
           }
 
+     func testTapoConfigParsesNestedCredentialsAndDevices() {
+        let config = Config.appConfig(from: [
+            "apiKey": "unit-test-key",
+            "baseURL": "https://example.test",
+            "mockMode": false,
+            "tapo": [
+                "email": "user@example.test",
+                "password": "password",
+                "devices": [
+                    ["name": "Verandah", "ip": "192.0.2.10", "type": "P110"],
+                ],
+            ],
+        ], environment: [:])
+
+        XCTAssertEqual(config.tapoEmail, "user@example.test")
+        XCTAssertEqual(config.tapoPassword, "password")
+        XCTAssertEqual(config.tapoDevices, [
+            TapoDeviceConfig(name: "Verandah", ip: "192.0.2.10", type: "P110"),
+        ])
+     }
+
+     func testTapoDeviceIPCanComeFromEnvironment() {
+        let config = Config.appConfig(from: [
+            "apiKey": "unit-test-key",
+            "tapo": [
+                "email": "user@example.test",
+                "password": "password",
+            ],
+        ], environment: [
+            "TAPO_DEVICE_NAME": "Desk",
+            "TAPO_DEVICE_IP": "192.0.2.22",
+            "TAPO_DEVICE_TYPE": "L530",
+        ])
+
+        XCTAssertEqual(config.tapoDevices, [
+            TapoDeviceConfig(name: "Desk", ip: "192.0.2.22", type: "L530"),
+        ])
+     }
+
      func testAirConTemperatureDisplay() {
         let ac1 = AirCon(id: "test", room: "Living Room", on: true, temperature: 22.5, mode: "cool")
         XCTAssertEqual(ac1.temperatureDisplay, "22°")
