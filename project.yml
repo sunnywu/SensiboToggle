@@ -3,6 +3,7 @@ options:
   bundleIdPrefix: com.a
   deploymentTarget:
     iOS: "17.0"
+    macOS: "14.0"
   createIntermediateGroups: true
 
 settings:
@@ -41,6 +42,30 @@ targets:
     info:
       path: Sources/Info.plist
 
+  SensiboToggleMenuBar:
+    type: application
+    platform: macOS
+    sources:
+      # Shared, platform-agnostic core — identical behaviour to the app.
+      - path: Sources/ACController.swift
+      - path: Sources/Config.swift
+      - path: Sources/Models.swift
+      - path: Sources/MockSensiboClient.swift
+      - path: Sources/SensiboClient.swift
+      # Menu-bar entry point (macOS-only: MenuBarExtra). Not the iOS @main.
+      - path: Sources/MenuBar/SensiboMenuBarApp.swift
+      - path: Sources/MenuBar/SensiboMenuBarView.swift
+      - path: config/local.config.json
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.a.SensiboToggle.MenuBar
+        PRODUCT_NAME: SensiboMenuBar
+        # Hand-maintained plist carrying LSUIElement; keep xcodegen from
+        # clobbering it (omit the `info:` key, like the widget plist).
+        INFOPLIST_FILE: MenuBar/Info.plist
+        GENERATE_INFOPLIST_FILE: "NO"
+
   BedroomOneWidgetExtension:
     type: app-extension
     platform: iOS
@@ -55,8 +80,11 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.a.SensiboToggle.BedroomOneWidget
         SKIP_INSTALL: "YES"
         SWIFT_VERSION: "5.0"
-    info:
-      path: BedroomOneWidget/Info.plist
+        # Hand-maintained widget plist (carries NSExtension /
+        # com.apple.widgetkit-extension). Protect it from xcodegen the same
+        # way as the menu-bar plist — point at it and never generate it.
+        INFOPLIST_FILE: BedroomOneWidget/Info.plist
+        GENERATE_INFOPLIST_FILE: "NO"
 
   SensiboTests:
     type: bundle.unit-test
@@ -94,3 +122,11 @@ schemes:
       targets:
         - SensiboTests
         - SensiboUITests
+
+  SensiboToggleMenuBar:
+    build:
+      targets:
+        SensiboToggleMenuBar: all
+    run:
+      targets:
+        - SensiboToggleMenuBar
