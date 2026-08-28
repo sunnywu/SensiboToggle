@@ -34,3 +34,31 @@ enum ControlState: Equatable {
     case pending(AirCon)
     case error(AirCon, String)
 }
+
+// MARK: - Light (Tapo)
+
+/// A single controllable light (a Tapo bulb today). Mirrors `AirCon` so the UI and
+/// controller can treat both device families the same way.
+struct Light: Hashable, Identifiable, Equatable {
+    let id: String
+    var name: String = ""
+    var room: String?
+    var on: Bool = false
+
+     /// Human label for the row: fall back to room, then name, then a short id.
+    var displayName: String {
+        if let room, !room.isEmpty { return room }
+        if !name.isEmpty { return name }
+        return "Light \(id.suffix(4))"
+        }
+
+     /// The SF Symbol shown for this light, filled when on.
+    var symbol: String { on ? "lightbulb.fill" : "lightbulb" }
+}
+
+/// One configured Tapo device. The local IP is required for direct KLAP control.
+struct TapoDeviceConfig: Equatable, Sendable {
+    var name: String
+    var ip: String
+    var type: String?
+}

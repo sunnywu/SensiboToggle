@@ -32,6 +32,9 @@ final class SensiboIntegrationTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
+        guard ProcessInfo.processInfo.environment["RUN_SENSIBO_LIVE_TESTS"] == "1" else {
+            throw XCTSkip("live Sensibo tests are opt-in because they can change real devices")
+        }
         guard !Self.apiKey.isEmpty else {
             throw XCTSkip("no API key available — skipping live test")
             }

@@ -18,51 +18,56 @@ targets:
     type: application
     platform: iOS
     sources:
-      - path: Sources/ACController.swift
-      - path: Sources/BedroomOneWidgetSupport.swift
-      - path: Sources/Config.swift
-      - path: Sources/ContentView.swift
-      - path: Sources/MockSensiboClient.swift
-      - path: Sources/Models.swift
-      - path: Sources/SensiboClient.swift
-      - path: Sources/SensiboToggleApp.swift
-      - path: Sources/Assets.xcassets
-        buildPhase: resources
-      - path: config/local.config.json
-        buildPhase: resources
+       - path: Sources/ACController.swift
+       - path: Sources/BedroomOneWidgetSupport.swift
+       - path: Sources/Config.swift
+       - path: Sources/ContentView.swift
+       - path: Sources/MockSensiboClient.swift
+       - path: Sources/Models.swift
+       - path: Sources/SensiboClient.swift
+       - path: Sources/SensiboToggleApp.swift
+       - path: Sources/TapoClient.swift
+       - path: Sources/TapoCrypto.swift
+       - path: Sources/TapoController.swift
+       - path: Sources/Assets.xcassets
+         buildPhase: resources
+       - path: config/local.config.json
+         buildPhase: resources
     dependencies:
-      - target: BedroomOneWidgetExtension
-        embed: true
+       - target: BedroomOneWidgetExtension
+         embed: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.a.SensiboToggle
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: "YES"
-        INFOPLIST_KEY_UILaunchScreen_Generation: "YES"
-    info:
-      path: Sources/Info.plist
+          # Hand-maintained Info.plist carries the ATS exception the Verandah
+          # light's local KLAP HTTP needs, plus the scene manifest + launch screen
+          # that were previously auto-injected via INFOPLIST_KEY_*. Protected from
+          # xcodegen the same way as the widget/menu-bar plists.
+        INFOPLIST_FILE: Sources/Info.plist
+        GENERATE_INFOPLIST_FILE: "NO"
 
   SensiboToggleMenuBar:
     type: application
     platform: macOS
     sources:
-      # Shared, platform-agnostic core — identical behaviour to the app.
-      - path: Sources/ACController.swift
-      - path: Sources/Config.swift
-      - path: Sources/Models.swift
-      - path: Sources/MockSensiboClient.swift
-      - path: Sources/SensiboClient.swift
-      # Menu-bar entry point (macOS-only: MenuBarExtra). Not the iOS @main.
-      - path: Sources/MenuBar/SensiboMenuBarApp.swift
-      - path: Sources/MenuBar/SensiboMenuBarView.swift
-      - path: config/local.config.json
-        buildPhase: resources
+       # Shared, platform-agnostic core — identical behaviour to the app.
+       - path: Sources/ACController.swift
+       - path: Sources/Config.swift
+       - path: Sources/Models.swift
+       - path: Sources/MockSensiboClient.swift
+       - path: Sources/SensiboClient.swift
+       # Menu-bar entry point (macOS-only: MenuBarExtra). Not the iOS @main.
+       - path: Sources/MenuBar/SensiboMenuBarApp.swift
+       - path: Sources/MenuBar/SensiboMenuBarView.swift
+       - path: config/local.config.json
+         buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.a.SensiboToggle.MenuBar
         PRODUCT_NAME: SensiboMenuBar
-        # Hand-maintained plist carrying LSUIElement; keep xcodegen from
-        # clobbering it (omit the `info:` key, like the widget plist).
+         # Hand-maintained plist carrying LSUIElement; keep xcodegen from
+         # clobbering it (omit the `info:` key, like the widget plist).
         INFOPLIST_FILE: MenuBar/Info.plist
         GENERATE_INFOPLIST_FILE: "NO"
 
@@ -70,19 +75,19 @@ targets:
     type: app-extension
     platform: iOS
     sources:
-      - path: BedroomOneWidget/BedroomOneWidget.swift
-      - path: Sources/BedroomOneWidgetSupport.swift
-      - path: config/local.config.json
-        buildPhase: resources
+       - path: BedroomOneWidget/BedroomOneWidget.swift
+       - path: Sources/BedroomOneWidgetSupport.swift
+       - path: config/local.config.json
+         buildPhase: resources
     settings:
       base:
         APPLICATION_EXTENSION_API_ONLY: "YES"
         PRODUCT_BUNDLE_IDENTIFIER: com.a.SensiboToggle.BedroomOneWidget
         SKIP_INSTALL: "YES"
         SWIFT_VERSION: "5.0"
-        # Hand-maintained widget plist (carries NSExtension /
-        # com.apple.widgetkit-extension). Protect it from xcodegen the same
-        # way as the menu-bar plist — point at it and never generate it.
+         # Hand-maintained widget plist (carries NSExtension /
+         # com.apple.widgetkit-extension). Protect it from xcodegen the same
+         # way as the menu-bar plist — point at it and never generate it.
         INFOPLIST_FILE: BedroomOneWidget/Info.plist
         GENERATE_INFOPLIST_FILE: "NO"
 
@@ -90,22 +95,25 @@ targets:
     type: bundle.unit-test
     platform: iOS
     sources:
-      - path: Tests/Unit/BackoffPolicyTests.swift
-      - path: Tests/Unit/ControllerTests.swift
-      - path: Tests/Unit/ModelAndConfigTests.swift
-      - path: Tests/Unit/SensiboIntegrationTests.swift
-      - path: config/local.config.json
-        buildPhase: resources
+       - path: Tests/Unit/BackoffPolicyTests.swift
+       - path: Tests/Unit/ControllerTests.swift
+       - path: Tests/Unit/ModelAndConfigTests.swift
+       - path: Tests/Unit/SensiboIntegrationTests.swift
+       - path: Tests/Unit/TapoControllerTests.swift
+       - path: Tests/Unit/TapoCryptoTests.swift
+       - path: Tests/Unit/TapoLiveIntegrationTests.swift
+       - path: config/local.config.json
+         buildPhase: resources
     dependencies:
-      - target: SensiboToggle
+       - target: SensiboToggle
 
   SensiboUITests:
     type: bundle.ui-testing
     platform: iOS
     sources:
-      - path: Tests/UI/SensiboUITests.swift
+       - path: Tests/UI/SensiboUITests.swift
     dependencies:
-      - target: SensiboToggle
+       - target: SensiboToggle
 
 schemes:
   SensiboToggle:
@@ -117,11 +125,11 @@ schemes:
         SensiboUITests: [test]
     run:
       targets:
-        - SensiboToggle
+         - SensiboToggle
     test:
       targets:
-        - SensiboTests
-        - SensiboUITests
+         - SensiboTests
+         - SensiboUITests
 
   SensiboToggleMenuBar:
     build:
@@ -129,4 +137,4 @@ schemes:
         SensiboToggleMenuBar: all
     run:
       targets:
-        - SensiboToggleMenuBar
+         - SensiboToggleMenuBar

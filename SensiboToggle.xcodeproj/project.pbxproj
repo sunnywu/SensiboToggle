@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		062C915AA5C257999580BC6C /* ACController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15AF54B196757D7B16A67AB /* ACController.swift */; };
+		07584D23712637F83C23A947 /* TapoControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4025C022E01A2F359E7B3F0C /* TapoControllerTests.swift */; };
 		0A3F807C07C167B2B39E3761 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A16FAEFA690B374A066998 /* Models.swift */; };
 		113BD7F9DA76D2E2B54A1F2C /* ModelAndConfigTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95B9878E813CC65A62B7A19 /* ModelAndConfigTests.swift */; };
 		23C076E68AFAE75D886DBC16 /* MockSensiboClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F09FE865495208C5BBD3F3 /* MockSensiboClient.swift */; };
@@ -15,12 +16,17 @@
 		272506CB26BDD2572ED9A9DC /* BackoffPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12B69D07557FF38F9593772 /* BackoffPolicyTests.swift */; };
 		2C1C2A83B688CD622C429ADA /* BedroomOneWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7BC60115427DB1C1100D9F4B /* BedroomOneWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		354F88D9B0AE28DBFB9536E2 /* BedroomOneWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84973581A0D8A5A08D0112C8 /* BedroomOneWidget.swift */; };
+		41C50A4F7F037D83894BA68C /* TapoLiveIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C216405F0A80920BDE5756 /* TapoLiveIntegrationTests.swift */; };
+		46CCBBC88FB10D23ECD92CB0 /* TapoClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB474D60B1074A87BC66041B /* TapoClient.swift */; };
 		54825B491EE10F9E2F6587D8 /* SensiboMenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5221F11E5390D29D829629D /* SensiboMenuBarView.swift */; };
 		5E52D422621BCB1475CC8A6D /* SensiboIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72D9FEEAEB70E7B51D520C11 /* SensiboIntegrationTests.swift */; };
 		62D7E8E962D8F1E3C75E1070 /* SensiboUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEE2F377FB308698C84C75F6 /* SensiboUITests.swift */; };
 		7A1C16428B5D66B2EBB573C7 /* SensiboClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B582D470FBB330F717BEEF /* SensiboClient.swift */; };
+		7ACBA74B7990109852732E80 /* TapoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E88F3ADF0E3090282F55E05 /* TapoController.swift */; };
+		7DA00822695C9AA0FA9079EF /* TapoCryptoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34ADE80A300588A2F0300D39 /* TapoCryptoTests.swift */; };
 		8D16B8E4696737AC350CAD65 /* SensiboClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B582D470FBB330F717BEEF /* SensiboClient.swift */; };
 		914739C4B0953FD2AE3DAF2E /* BedroomOneWidgetSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6346A4A39E782748819A9E30 /* BedroomOneWidgetSupport.swift */; };
+		95D76C2372C5E67605CA1923 /* TapoCrypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A3B2E11CB1A29BBAD8250A6 /* TapoCrypto.swift */; };
 		A4143D525F12E4085814CD63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24EB4E8512E48BB03EDDE89A /* Assets.xcassets */; };
 		A73F81BE3E9639AD65980645 /* local.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 13CB4B19F3F8B99217847340 /* local.config.json */; };
 		B20CEB3843EC07E3F1CAE8D4 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A16FAEFA690B374A066998 /* Models.swift */; };
@@ -79,15 +85,21 @@
 		1395B93A7E84334548E74AB6 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		13CB4B19F3F8B99217847340 /* local.config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = local.config.json; sourceTree = "<group>"; };
 		1718B11E445C1DE842B8B3F3 /* SensiboToggleMenuBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SensiboToggleMenuBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A3B2E11CB1A29BBAD8250A6 /* TapoCrypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapoCrypto.swift; sourceTree = "<group>"; };
 		24EB4E8512E48BB03EDDE89A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		34ADE80A300588A2F0300D39 /* TapoCryptoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapoCryptoTests.swift; sourceTree = "<group>"; };
+		4025C022E01A2F359E7B3F0C /* TapoControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapoControllerTests.swift; sourceTree = "<group>"; };
 		45B582D470FBB330F717BEEF /* SensiboClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensiboClient.swift; sourceTree = "<group>"; };
 		631CD0FDFC7ABB1E8DA27F97 /* ControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerTests.swift; sourceTree = "<group>"; };
 		6346A4A39E782748819A9E30 /* BedroomOneWidgetSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BedroomOneWidgetSupport.swift; sourceTree = "<group>"; };
 		72D9FEEAEB70E7B51D520C11 /* SensiboIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensiboIntegrationTests.swift; sourceTree = "<group>"; };
+		75C216405F0A80920BDE5756 /* TapoLiveIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapoLiveIntegrationTests.swift; sourceTree = "<group>"; };
 		7BC60115427DB1C1100D9F4B /* BedroomOneWidgetExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = BedroomOneWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E88F3ADF0E3090282F55E05 /* TapoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapoController.swift; sourceTree = "<group>"; };
 		84973581A0D8A5A08D0112C8 /* BedroomOneWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BedroomOneWidget.swift; sourceTree = "<group>"; };
 		95A16FAEFA690B374A066998 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		A5221F11E5390D29D829629D /* SensiboMenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensiboMenuBarView.swift; sourceTree = "<group>"; };
+		BB474D60B1074A87BC66041B /* TapoClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapoClient.swift; sourceTree = "<group>"; };
 		BE19A2A7C377C191645A7970 /* SensiboToggle.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SensiboToggle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2D483D876E7898B6BA736B8 /* SensiboUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SensiboUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD911F106829226C96E00717 /* SensiboTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SensiboTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -134,6 +146,9 @@
 				631CD0FDFC7ABB1E8DA27F97 /* ControllerTests.swift */,
 				E95B9878E813CC65A62B7A19 /* ModelAndConfigTests.swift */,
 				72D9FEEAEB70E7B51D520C11 /* SensiboIntegrationTests.swift */,
+				4025C022E01A2F359E7B3F0C /* TapoControllerTests.swift */,
+				34ADE80A300588A2F0300D39 /* TapoCryptoTests.swift */,
+				75C216405F0A80920BDE5756 /* TapoLiveIntegrationTests.swift */,
 			);
 			path = Unit;
 			sourceTree = "<group>";
@@ -159,6 +174,9 @@
 				95A16FAEFA690B374A066998 /* Models.swift */,
 				45B582D470FBB330F717BEEF /* SensiboClient.swift */,
 				E42BD04DC4E867FB3F6DB8CB /* SensiboToggleApp.swift */,
+				BB474D60B1074A87BC66041B /* TapoClient.swift */,
+				7E88F3ADF0E3090282F55E05 /* TapoController.swift */,
+				1A3B2E11CB1A29BBAD8250A6 /* TapoCrypto.swift */,
 				A718A63E44273701AB23400A /* MenuBar */,
 			);
 			path = Sources;
@@ -417,6 +435,9 @@
 				F18A0865AEEC544480FED73C /* ControllerTests.swift in Sources */,
 				113BD7F9DA76D2E2B54A1F2C /* ModelAndConfigTests.swift in Sources */,
 				5E52D422621BCB1475CC8A6D /* SensiboIntegrationTests.swift in Sources */,
+				07584D23712637F83C23A947 /* TapoControllerTests.swift in Sources */,
+				7DA00822695C9AA0FA9079EF /* TapoCryptoTests.swift in Sources */,
+				41C50A4F7F037D83894BA68C /* TapoLiveIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -432,6 +453,9 @@
 				B20CEB3843EC07E3F1CAE8D4 /* Models.swift in Sources */,
 				8D16B8E4696737AC350CAD65 /* SensiboClient.swift in Sources */,
 				EF01BA3CB9F0AC95610879A0 /* SensiboToggleApp.swift in Sources */,
+				46CCBBC88FB10D23ECD92CB0 /* TapoClient.swift in Sources */,
+				7ACBA74B7990109852732E80 /* TapoController.swift in Sources */,
+				95D76C2372C5E67605CA1923 /* TapoCrypto.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -477,9 +501,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Sources/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -648,9 +671,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Sources/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
