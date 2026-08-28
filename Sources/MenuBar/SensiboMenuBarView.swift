@@ -59,9 +59,19 @@ struct SensiboMenuBarView: View {
         } else {
             ForEach(controller.acs) { ac in
                 HStack {
-                    Image(systemName: ac.symbol)
-                        .foregroundColor(ac.on ? .orange : .blue)
-                    Text(ac.displayName)
+                    Button {
+                        controller.toggle(ac.id)
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: ac.symbol)
+                                 .foregroundColor(ac.on ? .orange : .blue)
+                            Text(ac.displayName)
+                        }
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(controller.pending.contains(ac.id))
+                    
                     Spacer()
                     Text(ac.temperatureDisplay)
                         .font(.caption)
