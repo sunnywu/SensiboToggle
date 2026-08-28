@@ -19,6 +19,7 @@ struct SensiboMenuBarApp: App {
 
     init() {
         let config = Config.load()
+        let controller: ACController
         if config.mockMode {
             let mock = MockSensiboClient(seed: [
                 AirCon(id: "wZnPcb29", name: "", room: "Bedroom 1", on: true, temperature: 23, mode: "heat"),
@@ -26,12 +27,17 @@ struct SensiboMenuBarApp: App {
                 AirCon(id: "hz5nXQHC", name: "", room: "Living Room", on: false, temperature: 22, mode: "auto"),
                 AirCon(id: "Xo5hnkKY", name: "", room: "Bedroom 3", on: false, temperature: 21, mode: "auto"),
               ])
-            _controller = StateObject(wrappedValue: ACController(client: mock))
+            controller = ACController(client: mock)
            } else {
             // Using the authentic Sensibo client with the API key from configuration
             let client = SensiboClient(baseURL: config.baseURL, apiKey: config.apiKey)
-            _controller = StateObject(wrappedValue: ACController(client: client))
+            controller = ACController(client: client)
           }
+        _controller = StateObject(wrappedValue: controller)
+
+        // Preload before the user opens the menu: fetch device state at launch so
+        // the first popover is instant instead of loading on the first click.
+        controller.warmup()
         }
 
     var body: some Scene {
