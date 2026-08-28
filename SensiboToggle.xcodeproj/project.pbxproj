@@ -30,6 +30,7 @@
 		A4143D525F12E4085814CD63 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24EB4E8512E48BB03EDDE89A /* Assets.xcassets */; };
 		A73F81BE3E9639AD65980645 /* local.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 13CB4B19F3F8B99217847340 /* local.config.json */; };
 		B20CEB3843EC07E3F1CAE8D4 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95A16FAEFA690B374A066998 /* Models.swift */; };
+		BC224E34FBD9448A8A9E01F4 /* SensiboRealUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 357C8C43169EBFA7D7A110E2 /* SensiboRealUITests.swift */; };
 		C1A1BEFE607E4E382F464477 /* SensiboMenuBarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E175D9E35B3FB6BAFF6CBD5B /* SensiboMenuBarApp.swift */; };
 		CFCCB89FA98766D44E03C264 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1395B93A7E84334548E74AB6 /* Config.swift */; };
 		D02E795226EBBA971569B8D9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E693F93B57959CA1C4601B9C /* ContentView.swift */; };
@@ -88,6 +89,7 @@
 		1A3B2E11CB1A29BBAD8250A6 /* TapoCrypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapoCrypto.swift; sourceTree = "<group>"; };
 		24EB4E8512E48BB03EDDE89A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		34ADE80A300588A2F0300D39 /* TapoCryptoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapoCryptoTests.swift; sourceTree = "<group>"; };
+		357C8C43169EBFA7D7A110E2 /* SensiboRealUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensiboRealUITests.swift; sourceTree = "<group>"; };
 		4025C022E01A2F359E7B3F0C /* TapoControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapoControllerTests.swift; sourceTree = "<group>"; };
 		45B582D470FBB330F717BEEF /* SensiboClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensiboClient.swift; sourceTree = "<group>"; };
 		631CD0FDFC7ABB1E8DA27F97 /* ControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerTests.swift; sourceTree = "<group>"; };
@@ -117,6 +119,7 @@
 		4DC5F7F6E8564FABE961A677 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				357C8C43169EBFA7D7A110E2 /* SensiboRealUITests.swift */,
 				FEE2F377FB308698C84C75F6 /* SensiboUITests.swift */,
 			);
 			path = UI;
@@ -409,6 +412,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC224E34FBD9448A8A9E01F4 /* SensiboRealUITests.swift in Sources */,
 				62D7E8E962D8F1E3C75E1070 /* SensiboUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

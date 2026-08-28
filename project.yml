@@ -112,6 +112,7 @@ targets:
     platform: iOS
     sources:
        - path: Tests/UI/SensiboUITests.swift
+       - path: Tests/UI/SensiboRealUITests.swift
     dependencies:
        - target: SensiboToggle
 
@@ -138,3 +139,37 @@ schemes:
     run:
       targets:
          - SensiboToggleMenuBar
+
+  SensiboRealTapoUITest:
+    build:
+      targets:
+        SensiboToggle: all
+        BedroomOneWidgetExtension: all
+        SensiboUITests: [test]
+    test:
+      targets:
+         - SensiboUITests
+      environmentVariables:
+        RUN_TAPO_LIVE_TOGGLE_TESTS: "1"
+
+  SensiboRealTapoTurnOn:
+    build:
+      targets:
+        SensiboToggle: all
+        SensiboTests: [test]
+    test:
+      targets:
+         - SensiboTests
+      environmentVariables:
+        RUN_TAPO_LIVE_TURN_ON_TEST: "1"
+
+  SensiboRealTapoLightTargetTest:
+    build:
+      targets:
+        SensiboToggle: all
+        SensiboTests: [test]
+    test:
+      targets:
+         - SensiboTests
+      environmentVariables:
+        RUN_TAPO_LIVE_TARGET_TEST: "1"

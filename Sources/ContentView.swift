@@ -125,48 +125,71 @@ private struct LightCompactRow: View {
     let toggle: () -> Void
 
     var body: some View {
-        HStack(spacing: 10) {
-            Image(systemName: light.symbol)
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundColor(light.on ? .yellow : .gray)
-                .frame(width: 24)
+        Button {
+            if !pending {
+                toggle()
+            }
+        } label: {
+            HStack(spacing: 10) {
+                Image(systemName: light.symbol)
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundColor(light.on ? .yellow : .gray)
+                    .frame(width: 24)
 
-            VStack(alignment: .leading, spacing: 1) {
-                Text(light.displayName)
-                    .font(.system(size: 17, weight: .semibold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.76)
-                Text(light.on ? "Tapo on" : "Tapo off")
-                    .font(.caption2)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(light.displayName)
+                        .font(.system(size: 17, weight: .semibold))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.76)
+                    Text(light.on ? "Tapo on" : "Tapo off")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                }
+
+                Spacer(minLength: 8)
+
+                Text("Light")
+                    .font(.caption)
                     .foregroundColor(.secondary)
                     .lineLimit(1)
+                    .frame(width: 38, alignment: .trailing)
+
+                SwitchPill(on: light.on, tint: .yellow)
             }
-
-            Spacer(minLength: 8)
-
-            Text("Light")
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .lineLimit(1)
-                .frame(width: 38, alignment: .trailing)
-
-            Toggle("", isOn: Binding(
-                get: { light.on },
-                set: { _ in toggle() }
-            ))
-            .labelsHidden()
-            .tint(.yellow)
-            .scaleEffect(0.84)
-            .frame(width: 52, height: 32)
-            .accessibilityIdentifier("light.toggle.\(light.id)")
-            .disabled(pending)
+            .padding(.horizontal, 12)
+            .frame(minHeight: 52, maxHeight: 52)
+            .background(Color(.secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         }
-        .padding(.horizontal, 12)
-        .frame(minHeight: 52, maxHeight: 52)
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("light.row.\(light.id)")
+        .buttonStyle(.plain)
+        .disabled(pending)
+        .accessibilityIdentifier("light.toggle.\(light.id)")
+        .accessibilityLabel(light.displayName)
+        .accessibilityValue(light.on ? "1" : "0")
+    }
+}
+
+private struct SwitchPill: View {
+    let on: Bool
+    let tint: Color
+
+    var body: some View {
+        ZStack(alignment: on ? .trailing : .leading) {
+            Capsule()
+                .fill(on ? tint : Color(.systemGray4))
+            Circle()
+                .fill(Color.white)
+                .frame(width: 24, height: 24)
+                .padding(4)
+        }
+        .frame(width: 52, height: 32)
+        .overlay {
+            if !on {
+                Capsule()
+                    .stroke(Color(.systemGray3), lineWidth: 2)
+            }
+        }
     }
 }
 

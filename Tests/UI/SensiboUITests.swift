@@ -46,14 +46,17 @@ final class SensiboUITests: XCTestCase {
      func testAllFourSeededDevicesRender() {
           // Mock seeds 4 ACs; all should be visible.
         XCTAssertTrue(self.app.otherElements["device.dashboard"].waitForExistence(timeout: 10), "dashboard should render")
-        XCTAssertGreaterThanOrEqual(self.app.switches.count, 5,
-            "expected 4 AC toggles plus 1 Tapo toggle, got \(self.app.switches.count)")
+        XCTAssertGreaterThanOrEqual(self.app.switches.count, 4,
+            "expected 4 AC toggles, got \(self.app.switches.count)")
+        XCTAssertTrue(self.app.descendants(matching: .any)["light.toggle.Verandah"].waitForExistence(timeout: 10),
+            "expected the Tapo light toggle button")
           }
 
      func testCombinedControlsFitWithoutScrolling() {
         XCTAssertTrue(self.app.otherElements["device.dashboard"].waitForExistence(timeout: 10))
-        XCTAssertTrue(self.app.switches["light.toggle.Verandah"].waitForExistence(timeout: 10))
-        XCTAssertTrue(self.app.switches["light.toggle.Verandah"].isHittable)
+        let lightToggle = self.app.descendants(matching: .any)["light.toggle.Verandah"]
+        XCTAssertTrue(lightToggle.waitForExistence(timeout: 10))
+        XCTAssertTrue(lightToggle.isHittable)
         XCTAssertFalse(self.app.tables.firstMatch.exists, "compact dashboard should not use a scrolling table")
      }
 

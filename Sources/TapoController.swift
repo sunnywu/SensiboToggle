@@ -11,6 +11,7 @@ final class TapoController: ObservableObject {
     @Published private(set) var pending: Set<String> = []
     @Published private(set) var error: String? = nil
     @Published private(set) var isReady = false
+    @Published private(set) var isLoading = false
 
     let client: TapoClientProtocol
 
@@ -22,6 +23,13 @@ final class TapoController: ObservableObject {
      }
 
     func load() async -> Result<[Light], Error> {
+        if isLoading {
+            return .success(lights)
+        }
+
+        isLoading = true
+        defer { isLoading = false }
+
         do {
             let loaded = try await self.client.load()
             self.lights = loaded

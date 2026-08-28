@@ -1,4 +1,5 @@
 import Foundation
+import Darwin
 
 // MARK: - Errors
 
@@ -165,6 +166,17 @@ final class KLAPTapoClient: TapoClientProtocol, @unchecked Sendable {
         return Self.onState(from: result) ?? false
       }
 
+    func deviceInfo(device: String) async throws -> [String: Any] {
+        guard !email.isEmpty, !password.isEmpty else { throw TapoError.noCredentials }
+        guard let ip = self.ip(name: device) else { throw TapoError.noDeviceIP(name: device) }
+        let inner: [String: Any] = [
+             "method": "get_device_info",
+             "params": [:],
+         ]
+        let innerJSON = try jsonToString(inner)
+        return try await self.execute(ip: ip, inner: innerJSON)
+      }
+
      // MARK: KLAP handshake + request
 
     private func execute(ip: String, inner: String) async throws -> [String: Any] {
@@ -205,13 +217,21 @@ final class KLAPTapoClient: TapoClientProtocol, @unchecked Sendable {
       }
 
     private func handshake(ip: String) async throws -> KlapSession {
-        let base = "http://\(ip):80"
+        let base = "http://\(ip):80/app"
         let auth = KlapCipher.authHash(username: email, password: password)
         let localSeed = tapoRandomBytes(16)
+        TapoDiscoveryProbe.send(to: ip)
 
          // 1) handshake1: localSeed -> remoteSeed || serverHash, and the TP_SESSIONID cookie.
         let (h1Data, h1Resp) = try await self.post(base + "/handshake1", body: localSeed, cookie: nil)
-        guard h1Data.count >= 48 else { throw TapoError.handshake(message: "short handshake1 reply") }
+        if h1Resp.statusCode == 403 {
+            throw TapoError.handshake(message: "turn on Third-Party Compatibility in the Tapo app, then try again")
+        }
+        guard (200..<300).contains(h1Resp.statusCode) else {
+            let text = String(decoding: h1Data, as: UTF8.self)
+            throw TapoError.http(status: h1Resp.statusCode, body: text)
+        }
+        guard h1Data.count == 48 else { throw TapoError.handshake(message: "unexpected handshake1 reply") }
         let remoteSeed = Array(h1Data[0..<16])
         let serverHash = Array(h1Data[16..<48])
         let cookie = Self.extractSessionID(from: h1Resp)
@@ -224,7 +244,11 @@ final class KLAPTapoClient: TapoClientProtocol, @unchecked Sendable {
 
          // 3) handshake2: SHA256(remoteSeed || localSeed || authHash). NOTE reversed operand order.
         let h2Hash = KlapCipher.digest(concat: remoteSeed + localSeed + auth)
-        let _ = try await self.post(base + "/handshake2", body: h2Hash, cookie: cookie)
+        let (h2Data, h2Resp) = try await self.post(base + "/handshake2", body: h2Hash, cookie: cookie)
+        guard (200..<300).contains(h2Resp.statusCode) else {
+            let text = String(decoding: h2Data, as: UTF8.self)
+            throw TapoError.http(status: h2Resp.statusCode, body: text)
+        }
 
         let cipher = KlapCipher(localSeed: localSeed, remoteSeed: remoteSeed, authHash: auth)
         guard let cipher else { throw TapoError.handshake(message: "cipher setup failed") }
@@ -235,7 +259,7 @@ final class KLAPTapoClient: TapoClientProtocol, @unchecked Sendable {
                       session: KlapSession,
                       inner: String) async throws -> [String: Any] {
         let (payload, seq) = session.cipher.encrypt(inner)
-        let url = "http://\(ip):80/request?seq=\(seq)"
+        let url = "http://\(ip):80/app/request?seq=\(seq)"
 
         let (data, resp) = try await self.post(url, body: payload, cookie: session.cookie)
 
@@ -356,4 +380,96 @@ extension KlapCipher {
     static func digest(concat: [UInt8]) -> [UInt8] {
         TapoHash.sha256(concat)
       }
+}
+
+// MARK: - TDP discovery wake-up
+
+enum TapoDiscoveryProbe {
+    private static let port: UInt16 = 20_002
+    private static let crcSeed: UInt32 = 0x5A6B_7C8D
+    private static let publicKeyPEM = """
+    -----BEGIN PUBLIC KEY-----
+    MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsrfXWgBS6W18B5QXgzwV
+    cQb2YoySgJcPNbuI5lJTe2Q1Fbc+diPuwV6JKm9JxJb6t6MZWIplBxS/zSSVx2Yi
+    hqjpn8aQvVqR3tJr4Z++h5WzQwhU0qQWCuBJ2HEZlqJYjU0zNHvNvnSJJ8miSSNV
+    oQg7hSKxrbM3Lw5T08sALqTN1uQeoh1AWBgJO2gl0kOKIOttvmWZoKePjN0TjL6K
+    GfGSkZKeerSDpwl5NmoqG0CNHUoG3Vpl8LoLxe48vd3MLF/UDbbaMFqjeYUiqJ9Y
+    Qx9NlKlDF1CJCh4MG0aLTDSuAoeRHV25yeA9oobx23F9mZkm8wIDAQAB
+    -----END PUBLIC KEY-----
+
+    """
+
+    static func send(to ip: String) {
+        let fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)
+        guard fd >= 0 else { return }
+        defer { close(fd) }
+
+        var addr = sockaddr_in()
+        addr.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
+        addr.sin_family = sa_family_t(AF_INET)
+        addr.sin_port = in_port_t(Self.port).bigEndian
+        guard inet_pton(AF_INET, ip, &addr.sin_addr) == 1 else { return }
+
+        let packet = Self.datagram()
+        packet.withUnsafeBytes { bytes in
+            guard let baseAddress = bytes.baseAddress else { return }
+            withUnsafePointer(to: &addr) { pointer in
+                pointer.withMemoryRebound(to: sockaddr.self, capacity: 1) { sockaddrPointer in
+                    _ = Darwin.sendto(fd, baseAddress, packet.count, 0, sockaddrPointer, socklen_t(MemoryLayout<sockaddr_in>.size))
+                }
+            }
+        }
+    }
+
+    static func datagram(serial: UInt32 = UInt32.random(in: .min ... .max)) -> [UInt8] {
+        let body = ["params": ["rsa_key": Self.publicKeyPEM]]
+        let payloadData = try! JSONSerialization.data(withJSONObject: body, options: [])
+        let payload = Array(payloadData)
+        var packet: [UInt8] = [2, 0]
+        packet.append(bigEndian: UInt16(1))
+        packet.append(bigEndian: UInt16(payload.count))
+        packet.append(contentsOf: [17, 0])
+        packet.append(bigEndian: serial)
+        packet.append(bigEndian: Self.crcSeed)
+        packet.append(contentsOf: payload)
+        packet.replaceSubrange(12..<16, with: Array(bigEndian: Self.crc32(packet)))
+        return packet
+    }
+
+    static func crc32(_ bytes: [UInt8], seed: UInt32 = 0) -> UInt32 {
+        var crc = seed ^ 0xffff_ffff
+        for byte in bytes {
+            let index = Int((crc ^ UInt32(byte)) & 0xff)
+            crc = (crc >> 8) ^ Self.crcTable[index]
+        }
+        return crc ^ 0xffff_ffff
+    }
+
+    private static let crcTable: [UInt32] = {
+        (0..<256).map { value -> UInt32 in
+            var crc = UInt32(value)
+            for _ in 0..<8 {
+                if crc & 1 == 1 {
+                    crc = 0xedb8_8320 ^ (crc >> 1)
+                } else {
+                    crc >>= 1
+                }
+            }
+            return crc
+        }
+    }()
+}
+
+private extension Array where Element == UInt8 {
+    mutating func append(bigEndian value: UInt16) {
+        self.append(UInt8((value >> 8) & 0xff))
+        self.append(UInt8(value & 0xff))
+    }
+
+    mutating func append(bigEndian value: UInt32) {
+        self.append(UInt8((value >> 24) & 0xff))
+        self.append(UInt8((value >> 16) & 0xff))
+        self.append(UInt8((value >> 8) & 0xff))
+        self.append(UInt8(value & 0xff))
+    }
 }
