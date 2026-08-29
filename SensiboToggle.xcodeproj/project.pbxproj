@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01FC387E5D6A9BD57B999F2D /* IdleScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1CE5529B8215019E311B94 /* IdleScheduler.swift */; };
 		0222FC5D84DDDD0CFF7AC2AD /* IdleDimmingControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8C9987BBFDA40C0534C9582 /* IdleDimmingControllerTests.swift */; };
 		062C915AA5C257999580BC6C /* ACController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15AF54B196757D7B16A67AB /* ACController.swift */; };
 		07584D23712637F83C23A947 /* TapoControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4025C022E01A2F359E7B3F0C /* TapoControllerTests.swift */; };
@@ -23,6 +24,7 @@
 		54825B491EE10F9E2F6587D8 /* SensiboMenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5221F11E5390D29D829629D /* SensiboMenuBarView.swift */; };
 		5E52D422621BCB1475CC8A6D /* SensiboIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72D9FEEAEB70E7B51D520C11 /* SensiboIntegrationTests.swift */; };
 		62D7E8E962D8F1E3C75E1070 /* SensiboUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEE2F377FB308698C84C75F6 /* SensiboUITests.swift */; };
+		67170D68E2A3753E7EF1DD27 /* IdleScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1CE5529B8215019E311B94 /* IdleScheduler.swift */; };
 		7A1C16428B5D66B2EBB573C7 /* SensiboClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B582D470FBB330F717BEEF /* SensiboClient.swift */; };
 		7ACBA74B7990109852732E80 /* TapoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E88F3ADF0E3090282F55E05 /* TapoController.swift */; };
 		7DA00822695C9AA0FA9079EF /* TapoCryptoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34ADE80A300588A2F0300D39 /* TapoCryptoTests.swift */; };
@@ -102,6 +104,7 @@
 		7BC60115427DB1C1100D9F4B /* BedroomOneWidgetExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = BedroomOneWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E88F3ADF0E3090282F55E05 /* TapoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapoController.swift; sourceTree = "<group>"; };
 		84973581A0D8A5A08D0112C8 /* BedroomOneWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BedroomOneWidget.swift; sourceTree = "<group>"; };
+		8C1CE5529B8215019E311B94 /* IdleScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdleScheduler.swift; sourceTree = "<group>"; };
 		95A16FAEFA690B374A066998 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		A5221F11E5390D29D829629D /* SensiboMenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensiboMenuBarView.swift; sourceTree = "<group>"; };
 		BB474D60B1074A87BC66041B /* TapoClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapoClient.swift; sourceTree = "<group>"; };
@@ -179,6 +182,7 @@
 				1395B93A7E84334548E74AB6 /* Config.swift */,
 				E693F93B57959CA1C4601B9C /* ContentView.swift */,
 				095F2BF139EE31BADC0E69C3 /* IdleDimmingController.swift */,
+				8C1CE5529B8215019E311B94 /* IdleScheduler.swift */,
 				E5F09FE865495208C5BBD3F3 /* MockSensiboClient.swift */,
 				95A16FAEFA690B374A066998 /* Models.swift */,
 				45B582D470FBB330F717BEEF /* SensiboClient.swift */,
@@ -429,6 +433,7 @@
 			files = (
 				062C915AA5C257999580BC6C /* ACController.swift in Sources */,
 				CFCCB89FA98766D44E03C264 /* Config.swift in Sources */,
+				01FC387E5D6A9BD57B999F2D /* IdleScheduler.swift in Sources */,
 				23C076E68AFAE75D886DBC16 /* MockSensiboClient.swift in Sources */,
 				0A3F807C07C167B2B39E3761 /* Models.swift in Sources */,
 				7A1C16428B5D66B2EBB573C7 /* SensiboClient.swift in Sources */,
@@ -461,6 +466,7 @@
 				EFB86685ADB6E43E01AD6DED /* Config.swift in Sources */,
 				D02E795226EBBA971569B8D9 /* ContentView.swift in Sources */,
 				2B282C3FDFD552C8ADCD8182 /* IdleDimmingController.swift in Sources */,
+				67170D68E2A3753E7EF1DD27 /* IdleScheduler.swift in Sources */,
 				F6F1231613BA76FB2026B41A /* MockSensiboClient.swift in Sources */,
 				B20CEB3843EC07E3F1CAE8D4 /* Models.swift in Sources */,
 				8D16B8E4696737AC350CAD65 /* SensiboClient.swift in Sources */,

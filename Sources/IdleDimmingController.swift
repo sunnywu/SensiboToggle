@@ -25,20 +25,9 @@ import UIKit
 /// that truly prevents the OS from locking the device
 /// (`UIApplication.isIdleTimerDisabled`) is flipped by `KioskAppDelegate`.
 ///
-/// The timer is behind the `IdleScheduler` seam so the controller is testable
-/// without real `Task.sleep`s: production uses `TaskIdleScheduler`, tests use a
-/// manual scheduler that fires on demand. This mirrors the existing pattern of
-/// injecting `client:` for a hermetic unit test.
-public protocol IdleTimer: Sendable {
-    func cancel()
-}
-
-/// Schedules a one-shot "time passed" callback `after` an interval.
-public protocol IdleScheduler: Sendable {
-    @discardableResult
-    func schedule(after interval: TimeInterval, work: @escaping @Sendable () -> Void) -> any IdleTimer
-}
-
+// The one-shot timer seam that drives this dimmer -- and the AC-state poller --
+// (IdleTimer / IdleScheduler / TaskIdleScheduler / TaskIdleTimer) now lives in
+// `Sources/IdleScheduler.swift`, shared with the menu-bar target.
 /// Minimal screen-brightness seam. Production uses `UIScreen.main`; unit tests
 /// inject a fake so they never change the developer's simulator or device.
 @MainActor
@@ -67,43 +56,8 @@ final class SystemScreenBrightnessController: ScreenBrightnessControlling {
     }
 }
 
-/// Production scheduler: a cancellable `Task` that sleeps for the interval.
-///
-/// The work always runs on the main actor (the `Task` is `@MainActor`), which
-/// is what the `@MainActor` controller needs.
-public struct TaskIdleScheduler: IdleScheduler {
-    public init() {}
-
-    public func schedule(after interval: TimeInterval,
-                         work: @escaping @Sendable () -> Void) -> any IdleTimer {
-        TaskIdleTimer(after: interval, work: work)
-     }
-}
-
-/// One pending, cancellable timer built on a `Task`.
-///
-/// Marked `@unchecked Sendable`: the only shared state is the optional `Task`
-/// reference, mutated on a single path (the controller's main-actor `reschedule`),
-/// so the invariant is trivially satisfied.
-final class TaskIdleTimer: IdleTimer, @unchecked Sendable {
-    private var task: Task<Void, Never>?
-
-    init(after interval: TimeInterval, work: @escaping @Sendable () -> Void) {
-        self.task = Task { @MainActor in
-            try? await Task.sleep(for: .seconds(interval))
-            // A cancelled task wakes from `sleep` as a `CancellationError`
-            // (swallowed by `try?`); don't fire a cancelled timer.
-            guard !Task.isCancelled else { return }
-            work()
-         }
-     }
-
-    func cancel() {
-        task?.cancel()
-        task = nil
-     }
-}
-
+// The one-shot timer types were extracted to `Sources/IdleScheduler.swift` (shared
+// with the menu-bar target); this controller consumes the seam via `scheduler:`.
 @MainActor
 final class IdleDimmingController: ObservableObject, @unchecked Sendable {
     /// `true` while the black overlay should cover the UI. The view binds to this.
