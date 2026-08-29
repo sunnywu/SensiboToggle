@@ -100,9 +100,9 @@ struct ContentView: View {
       }
 }
 
-/// Full-bleed opaque black view shown while the panel is idle. Emits effectively
-/// no light, i.e. the "dim to zero" the wall panel wants. iOS has no public
-/// hardware-brightness API, so this overlay is the app's way of going blank.
+/// Full-bleed opaque black view shown while the panel is idle. The controller
+/// also lowers hardware brightness, so wall mode is both visually blank and
+/// gentler on the LCD backlight.
 private struct WallBlankOverlay: View {
         var body: some View {
              Color.black

@@ -56,6 +56,15 @@ final class ManualIdleScheduler: IdleScheduler, @unchecked Sendable {
 }
 
 @MainActor
+final class FakeScreenBrightness: ScreenBrightnessControlling {
+    var brightness: Double
+
+    init(_ brightness: Double = 0.65) {
+        self.brightness = brightness
+    }
+}
+
+@MainActor
 final class IdleDimmingControllerTests: XCTestCase {
 
      // MARK: - Disabled / inert
@@ -64,12 +73,15 @@ final class IdleDimmingControllerTests: XCTestCase {
        /// view layer can wire it unconditionally with zero behaviour change.
     func testDisabledDoesNotDim() {
         let scheduler = ManualIdleScheduler()
-        let c = IdleDimmingController(enabled: false, idleDelay: 2.0, scheduler: scheduler)
+        let screen = FakeScreenBrightness()
+        let c = IdleDimmingController(enabled: false, idleDelay: 2.0,
+                                      scheduler: scheduler, screen: screen)
 
         XCTAssertFalse(c.isDimmed)
         c.registerActivity()
         scheduler.fireDue()
         XCTAssertFalse(c.isDimmed, "disabled controller must never dim")
+        XCTAssertEqual(screen.brightness, 0.65, accuracy: 0.0001)
          }
 
      // MARK: - Idle -> blank
@@ -77,7 +89,9 @@ final class IdleDimmingControllerTests: XCTestCase {
       /// A countdown starts on launch; when it fires with no activity, it blanks.
     func testBlanksAfterIdleDelay() {
         let scheduler = ManualIdleScheduler()
-        let c = IdleDimmingController(enabled: true, idleDelay: 2.0, scheduler: scheduler)
+        let screen = FakeScreenBrightness(0.7)
+        let c = IdleDimmingController(enabled: true, idleDelay: 2.0,
+                                      scheduler: scheduler, screen: screen)
 
         XCTAssertFalse(c.isDimmed)
         XCTAssertEqual(scheduler.pendingCount, 1, "a 2s countdown must be running at start")
@@ -85,6 +99,7 @@ final class IdleDimmingControllerTests: XCTestCase {
 
         scheduler.fireDue()
         XCTAssertTrue(c.isDimmed, "the screen must go blank after the idle delay")
+        XCTAssertEqual(screen.brightness, 0.01, accuracy: 0.0001)
          }
 
      // MARK: - Any touch wakes + resets
@@ -93,24 +108,30 @@ final class IdleDimmingControllerTests: XCTestCase {
        /// — it does not simply let the old timer keep running.
     func testActivityWakesThenBlanksAgain() {
         let scheduler = ManualIdleScheduler()
-        let c = IdleDimmingController(enabled: true, idleDelay: 2.0, scheduler: scheduler)
+        let screen = FakeScreenBrightness(0.72)
+        let c = IdleDimmingController(enabled: true, idleDelay: 2.0,
+                                      scheduler: scheduler, screen: screen)
 
         scheduler.fireDue()
         XCTAssertTrue(c.isDimmed)
+        XCTAssertEqual(screen.brightness, 0.01, accuracy: 0.0001)
 
         c.registerActivity()                 // "someone touched the wall"
         XCTAssertFalse(c.isDimmed, "a touch must wake the screen")
+        XCTAssertEqual(screen.brightness, 0.72, accuracy: 0.0001)
         XCTAssertEqual(scheduler.pendingCount, 1, "a fresh countdown must be running")
 
         scheduler.fireDue()                  // nobody touched again
         XCTAssertTrue(c.isDimmed, "idling again must blank it again")
+        XCTAssertEqual(screen.brightness, 0.01, accuracy: 0.0001)
         }
 
       /// Activity *before* the in-flight timer fires cancels that timer so it
        /// cannot blank the screen mid-activity — then a new one takes over.
     func testActivityCancelsInFlightTimer() {
         let scheduler = ManualIdleScheduler()
-        let c = IdleDimmingController(enabled: true, idleDelay: 10.0, scheduler: scheduler)
+        let c = IdleDimmingController(enabled: true, idleDelay: 10.0,
+                                      scheduler: scheduler, screen: FakeScreenBrightness())
 
         let first = scheduler.pending.first   // the only pending timer
         XCTAssertNotNil(first)
@@ -131,7 +152,8 @@ final class IdleDimmingControllerTests: XCTestCase {
       /// `setInterval` swaps the countdown length and reschedules.
     func testSetIntervalReschedules() {
         let scheduler = ManualIdleScheduler()
-        let c = IdleDimmingController(enabled: true, idleDelay: 2.0, scheduler: scheduler)
+        let c = IdleDimmingController(enabled: true, idleDelay: 2.0,
+                                      scheduler: scheduler, screen: FakeScreenBrightness())
 
         XCTAssertEqual(scheduler.liveInterval, 2.0)
         c.setInterval(10.0)
@@ -144,13 +166,17 @@ final class IdleDimmingControllerTests: XCTestCase {
         /// stops dimming even after a fire.
     func testSetEnabledFalseCancelsAndUnblanks() {
         let scheduler = ManualIdleScheduler()
-        let c = IdleDimmingController(enabled: true, idleDelay: 2.0, scheduler: scheduler)
+        let screen = FakeScreenBrightness(0.83)
+        let c = IdleDimmingController(enabled: true, idleDelay: 2.0,
+                                      scheduler: scheduler, screen: screen)
 
         scheduler.fireDue()
         XCTAssertTrue(c.isDimmed)
+        XCTAssertEqual(screen.brightness, 0.01, accuracy: 0.0001)
 
         c.setEnabled(false)
         XCTAssertFalse(c.isDimmed, "disabling must clear the blank")
+        XCTAssertEqual(screen.brightness, 0.83, accuracy: 0.0001)
         XCTAssertEqual(scheduler.pendingCount, 0)
 
         scheduler.fireDue()
@@ -163,7 +189,9 @@ final class IdleDimmingControllerTests: XCTestCase {
        /// blank a screen nobody is looking at; returning re-arms it.
     func testSceneInactivePausesAndActiveResumes() {
         let scheduler = ManualIdleScheduler()
-        let c = IdleDimmingController(enabled: true, idleDelay: 2.0, scheduler: scheduler)
+        let screen = FakeScreenBrightness(0.42)
+        let c = IdleDimmingController(enabled: true, idleDelay: 2.0,
+                                      scheduler: scheduler, screen: screen)
 
         c.sceneInactive()
         XCTAssertEqual(scheduler.pendingCount, 0, "backgrounding must cancel the timer")
@@ -173,5 +201,21 @@ final class IdleDimmingControllerTests: XCTestCase {
 
         scheduler.fireDue()
         XCTAssertTrue(c.isDimmed)
+        XCTAssertEqual(screen.brightness, 0.01, accuracy: 0.0001)
        }
+
+    func testSceneInactiveRestoresBrightnessIfAlreadyDimmed() {
+        let scheduler = ManualIdleScheduler()
+        let screen = FakeScreenBrightness(0.38)
+        let c = IdleDimmingController(enabled: true, idleDelay: 2.0,
+                                      scheduler: scheduler, screen: screen)
+
+        scheduler.fireDue()
+        XCTAssertTrue(c.isDimmed)
+        XCTAssertEqual(screen.brightness, 0.01, accuracy: 0.0001)
+
+        c.sceneInactive()
+        XCTAssertFalse(c.isDimmed)
+        XCTAssertEqual(screen.brightness, 0.38, accuracy: 0.0001)
+    }
 }

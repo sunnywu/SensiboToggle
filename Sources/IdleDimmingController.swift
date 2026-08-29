@@ -1,5 +1,8 @@
 import Foundation
 import Combine
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// Keeps a wall/panel deployment blank when nobody is in front of it.
 ///
@@ -15,11 +18,11 @@ import Combine
 ///
 /// Design notes
 /// ------------
-/// iOS exposes **no public API** to drive hardware screen brightness, so "dim to
-/// zero" is achieved with an opaque black overlay covering the UI (emits
-/// effectively no light). The overlay is owned by `ContentView`; this controller
-/// only decides *when* it should show (`isDimmed`). The companion switch that
-/// truly prevents the OS from locking the device
+/// Wall mode combines two actions when idle: an opaque black overlay covers the
+/// UI, and `UIScreen.main.brightness` is lowered through `ScreenBrightnessControlling`.
+/// The overlay makes the panel visually blank; the hardware brightness change
+/// reduces LCD backlight load on long-running wall installs. The companion switch
+/// that truly prevents the OS from locking the device
 /// (`UIApplication.isIdleTimerDisabled`) is flipped by `KioskAppDelegate`.
 ///
 /// The timer is behind the `IdleScheduler` seam so the controller is testable
@@ -34,6 +37,34 @@ public protocol IdleTimer: Sendable {
 public protocol IdleScheduler: Sendable {
     @discardableResult
     func schedule(after interval: TimeInterval, work: @escaping @Sendable () -> Void) -> any IdleTimer
+}
+
+/// Minimal screen-brightness seam. Production uses `UIScreen.main`; unit tests
+/// inject a fake so they never change the developer's simulator or device.
+@MainActor
+public protocol ScreenBrightnessControlling: AnyObject {
+    var brightness: Double { get set }
+}
+
+final class SystemScreenBrightnessController: ScreenBrightnessControlling {
+    var brightness: Double {
+        get {
+            #if canImport(UIKit)
+            return Double(UIScreen.main.brightness)
+            #else
+            return 1.0
+            #endif
+        }
+        set {
+            #if canImport(UIKit)
+            UIScreen.main.brightness = CGFloat(Self.clamped(newValue))
+            #endif
+        }
+    }
+
+    private static func clamped(_ value: Double) -> Double {
+        min(max(value, 0.0), 1.0)
+    }
 }
 
 /// Production scheduler: a cancellable `Task` that sleeps for the interval.
@@ -88,14 +119,21 @@ final class IdleDimmingController: ObservableObject, @unchecked Sendable {
      var idleDelay: TimeInterval
 
      private let scheduler: any IdleScheduler
+     private let screen: any ScreenBrightnessControlling
+     private let dimBrightness: Double
      private var timer: (any IdleTimer)?
+     private var savedBrightness: Double?
 
      /// Production entry point: real `Task`-backed timer.
     public init(enabled: Bool = true, idleDelay: TimeInterval = 2.0,
-                scheduler: any IdleScheduler = TaskIdleScheduler()) {
+                dimBrightness: Double = 0.01,
+                scheduler: any IdleScheduler = TaskIdleScheduler(),
+                screen: any ScreenBrightnessControlling = SystemScreenBrightnessController()) {
         self.enabled = enabled
          self.idleDelay = idleDelay
+        self.dimBrightness = Self.clamped(dimBrightness)
         self.scheduler = scheduler
+        self.screen = screen
          start()
      }
 
@@ -116,6 +154,8 @@ final class IdleDimmingController: ObservableObject, @unchecked Sendable {
         guard enabled else { return }
        timer?.cancel()
        timer = nil
+       isDimmed = false
+       restoreBrightness()
       }
 
      // MARK: - Activity / wake (single entry point)
@@ -124,6 +164,7 @@ final class IdleDimmingController: ObservableObject, @unchecked Sendable {
       /// No-op when disabled.
     func registerActivity() {
         guard enabled else { return }
+        restoreBrightness()
         isDimmed = false         // wake — clears the overlay if it was up
         reschedule()             // start a fresh countdown
       }
@@ -145,6 +186,7 @@ final class IdleDimmingController: ObservableObject, @unchecked Sendable {
           } else {
             timer?.cancel()
             timer = nil
+            restoreBrightness()
             isDimmed = false
           }
       }
@@ -168,6 +210,20 @@ final class IdleDimmingController: ObservableObject, @unchecked Sendable {
 
      private func dim() {
         timer = nil
+        if savedBrightness == nil {
+            savedBrightness = screen.brightness
+        }
+        screen.brightness = dimBrightness
         isDimmed = true
+     }
+
+     private func restoreBrightness() {
+        guard let original = savedBrightness else { return }
+        screen.brightness = original
+        savedBrightness = nil
+     }
+
+     private static func clamped(_ value: Double) -> Double {
+        min(max(value, 0.0), 1.0)
      }
     }
