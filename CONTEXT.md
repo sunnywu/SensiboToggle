@@ -56,7 +56,7 @@ Access.
   alive while blank.
 - **Blanks on idle** — `IdleDimmingController`
   (`Sources/IdleDimmingController.swift`) drops a full‑bleed opaque black
-  overlay and hides the status bar after `wallPanelIdleSeconds` (default 2s)
+  overlay and hides the status bar after `wallPanelIdleSeconds` (default 15s)
   of no movement. iOS has **no public hardware‑brightness API**, so "dim to
   zero" is a black overlay (≈no light), not real brightness.
 - **Wakes on any touch** — `registerActivity()` clears the overlay and
@@ -128,6 +128,6 @@ Gotchas when watching a wall‑panel run:
 
 - Branch `feature/wall-panel-kiosk` @ `3285523`; clean tree (only pre‑existing
   untracked `.github/`).
-- `config/local.config.json` has `wallPanel {enabled: true, idleSeconds: 2}`
+- `config/local.config.json` has `wallPanel {enabled: true, idleSeconds: 15}`
   and a real `apiKey` (present, not printed).
 - Full wall‑panel loop demonstrated on the desktop simulator.

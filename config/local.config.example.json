@@ -11,6 +11,6 @@
     },
     "wallPanel": {
       "enabled": false,
-      "idleSeconds": 2
+      "idleSeconds": 15
     }
   }

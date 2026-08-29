@@ -50,7 +50,7 @@ clean and unobtrusive:
 - **Never lock.** While kiosk mode is on, `UIApplication.isIdleTimerDisabled` is
   set (via `KioskAppDelegate`), so the device stays awake and Guided Access never
   drops to the lock screen.
-- **Blank when idle.** After `wallPanelIdleSeconds` (default **2s**) with *no
+- **Blank when idle.** After `wallPanelIdleSeconds` (default **15s**) with *no
   movement anywhere*, a full-bleed opaque **black overlay** covers the screen, then
   any **touch anywhere** wakes it and shows the toggles again, resetting the
   countdown. Each toggle you flip also counts as activity, so using the panel
@@ -68,7 +68,7 @@ before. Enable it in `local.config.json`:
 
 ```json
 {
-  "wallPanel": { "enabled": true, "idleSeconds": 2 }
+  "wallPanel": { "enabled": true, "idleSeconds": 15 }
 }
 ```
 

@@ -45,9 +45,9 @@ struct AppConfig: Equatable {
         //    - `wallPanelEnabled`: keep the screen awake and blank it after a period
         //      of no movement, waking on any touch.
         //    - `wallPanelIdleSeconds`: seconds of no movement before blanking.
-        //      Defaults to 2s for the wall-panel use case; fully configurable.
+        //      Defaults to 15s for the wall-panel use case; fully configurable.
     var wallPanelEnabled: Bool = false
-    var wallPanelIdleSeconds: Double = 2.0
+    var wallPanelIdleSeconds: Double = 15.0
 }
 
 enum Config {
@@ -61,7 +61,7 @@ enum Config {
             // default (keeps XCUITest stable). Preview it on the simulator with
             // `SIMCTL_CHILD_WALL_PANEL=1` [and `SIMCTL_CHILD_WALL_PANEL_IDLE_SECONDS`].
             let wallEnabled = Self.parseBool(env["WALL_PANEL"]) ?? false
-            let wallIdle = Self.parseDouble(env["WALL_PANEL_IDLE_SECONDS"]) ?? 2.0
+            let wallIdle = Self.parseDouble(env["WALL_PANEL_IDLE_SECONDS"]) ?? 15.0
             return AppConfig(apiKey: "", baseURL: "https://home.sensibo.com/api/v2",
                              mockMode: true,
                              wallPanelEnabled: wallEnabled,
@@ -98,7 +98,7 @@ enum Config {
             //    - enabled: `WALL_PANEL` ("1"/"true"/"yes"/"on") overrides nested
             //      `wallPanel.enabled` or flat `wallPanelEnabled`.
             //    - idle: `WALL_PANEL_IDLE_SECONDS` overrides `wallPanel.idleSeconds`
-            //      or flat `wallPanelIdleSeconds`. Default 2 seconds.
+            //      or flat `wallPanelIdleSeconds`. Default 15 seconds.
         let wallPanel = obj["wallPanel"] as? [String: Any]
         let wallPanelEnabled: Bool
         if let envEnabled = Self.parseBool(env["WALL_PANEL"]) {
@@ -111,7 +111,7 @@ enum Config {
         let wallPanelIdleSeconds = Self.parseDouble(env["WALL_PANEL_IDLE_SECONDS"])
               ?? Self.parseDouble(wallPanel?["idleSeconds"])
               ?? Self.parseDouble(obj["wallPanelIdleSeconds"])
-              ?? 2.0
+              ?? 15.0
 
         return AppConfig(apiKey: key,
                          baseURL: base,
