@@ -2,6 +2,13 @@
 
 Use this guide when an agent needs to build, test, install, or launch the iOS app in Simulator.
 
+> **Standing user preference:** when you run the simulator, open its window on
+> the user's desktop so they can watch and interact — do it **whenever
+> possible**. Don't launch headless. See `## Showing the Simulator` below and
+> `CONTEXT.md` (the project context doc). This volume is case‑insensitive, so
+> `agent.md`/`AGENTS.md` and `context.md`/`CONTEXT.md` are the same files on
+> disk — use uppercase.
+
 ## Project
 
 - Root: `/Users/a/SensiboToggle`
@@ -184,3 +191,47 @@ xcodebuild -quiet \
 ```
 
 Do not put the literal key in test source, README examples, terminal summaries, or final responses.
+
+## Showing the Simulator  (standing user preference)
+
+The user wants to be able to **see the simulator window on their desktop**
+whenever you run it, so add the window step to any launch/screenshot flow
+when possible. In Xcode 26.x `xcrun simctl open` / `xcrun simctl open booted`
+**does not exist** — use the GUI app instead:
+
+```sh
+xcrun simctl boot 10E477E3-AB80-452A-9C05-8B8C65B40D90   # iPhone 17 (or list devices for the UDID)
+open -a Simulator
+osascript -e 'tell application "Simulator" to activate'   # bring its window to front
+```
+
+Wall‑panel gotchas when watching on the desktop:
+
+- A launched **wall‑panel** app **blanks after its idle window**, so a fresh
+  screenshot can look black. To keep it visible while watching, start it with a
+  long idle (still safe in mock):
+  ```sh
+  SIMCTL_CHILD_WALL_PANEL_IDLE_SECONDS=120 \
+  SIMCTL_CHILD_SENSIBO_MOCK=1 \
+  xcrun simctl launch --terminate-running-process booted com.a.SensiboToggle
+  ```
+- `xcrun simctl` cannot synthesize a coordinate tap (no `io tap`/`open`), and
+  `simctl launch` without `--terminate-running-process` does not re‑fire
+  `scenePhase=.active`, so **neither re‑wakes a blanked panel.** Prove
+  wake‑on‑touch with the committed test `SensiboUITests/WallPanelUITests`.
+- For any watchable run, prefer **mock mode** (`SIMCTL_CHILD_SENSIBO_MOCK=1`)
+  so toggling never changes the real AC.
+
+## Wall‑panel / kiosk mode
+
+Implemented on branch `feature/wall-panel-kiosk` (commit `3285523`): an old
+iPhone on the wall runs the panel forever under Guided Access — **never
+sleeps**, **blanks to a black overlay after `wallPanelIdleSeconds` (default
+2s)** of no movement, and **wakes on any touch** (tap / toggle restarts the
+countdown). iOS has no public hardware‑brightness API, so "dim to zero" is an
+opaque black overlay (`ContentView.WallBlankOverlay` + hidden status bar), not
+real brightness. Controlled by `wallPanel.{enabled,idleSeconds}` (default
+off) with env overrides `WALL_PANEL` / `WALL_PANEL_IDLE_SECONDS` (prefix
+`SIMCTL_CHILD_` under `xcrun simctl launch`). See `CONTEXT.md` for the full
+picture (`IdleDimmingController` + injectable `IdleScheduler`, proven in the
+simulator: idle→`0/0/0` blank, tap→woken dashboard)

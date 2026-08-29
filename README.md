@@ -41,6 +41,55 @@ Then edit `config/local.config.json` and set your own API key.
 
 To run with mock data, either keep `mockMode` set to `true` or run the app with `SENSIBO_MOCK=1`.
 
+## Wall Panel / Kiosk Mode
+
+Run the app on an old **iPhone SE (2nd gen)** mounted on the wall as a always-on
+**touch panel** for the AC and light, in **Guided Access**. Two behaviors keep it
+clean and unobtrusive:
+
+- **Never lock.** While kiosk mode is on, `UIApplication.isIdleTimerDisabled` is
+  set (via `KioskAppDelegate`), so the device stays awake and Guided Access never
+  drops to the lock screen.
+- **Blank when idle.** After `wallPanelIdleSeconds` (default **2s**) with *no
+  movement anywhere*, a full-bleed opaque **black overlay** covers the screen, then
+  any **touch anywhere** wakes it and shows the toggles again, resetting the
+  countdown. Each toggle you flip also counts as activity, so using the panel
+  keeps it awake until you stop for `idleSeconds`.
+
+> iOS exposes **no public API to drive hardware brightness**, so "dim to zero" is
+> implemented as an identical-to-black overlay (a pixel measurement of the sim
+> screenshot after idling is `max = 0, mean = 0`). The status bar is also hidden
+> so the wall is truly uniform. The logic lives in `IdleDimmingController` (with a
+> testable, no-sleep `IdleScheduler` seam) and its tests in
+> `Tests/Unit/IdleDimmingControllerTests.swift`.
+
+It is **off by default**, so installs that don't request it behave exactly as
+before. Enable it in `local.config.json`:
+
+```json
+{
+  "wallPanel": { "enabled": true, "idleSeconds": 2 }
+}
+```
+
+The same keys are also accepted flat ("wallPanelEnabled": true,
+"wallPanelIdleSeconds": 2), and an environment variable always wins
+`WALL_PANEL=1` / `WALL_PANEL_IDLE_SECONDS=2` (mirrors the `tapo` precedence).
+
+**Preview on the simulator** (mock data, 1s idle so it blanks fast without
+waiting):
+
+```bash
+SIMCTL_CHILD_SENSIBO_MOCK=1 \
+SIMCTL_CHILD_WALL_PANEL=1 \
+SIMCTL_CHILD_WALL_PANEL_IDLE_SECONDS=1 \
+xcrun simctl launch --terminate-running-process booted com.a.SensiboToggle
+```
+
+Wait a moment with no touch and the screen goes blank; tap anywhere to wake it.
+Note: mock mode keeps kiosk **off** unless `WALL_PANEL=1` is passed explicitly, so
+XCUITest never blanks the UI it is driving.
+
 ## How to Build and Run in Xcode Simulator (iPhone 17)
 
 1. Open the project in Xcode:
