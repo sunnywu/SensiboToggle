@@ -10,7 +10,8 @@ final class SensiboRealUITests: XCTestCase {
             throw XCTSkip("real UI toggle test is opt-in because it changes a real device")
         }
         continueAfterFailure = false
-        app = XCUIApplication()
+        app = XCUIApplication(bundleIdentifier: "com.a.SensiboToggle")
+        app.launchEnvironment = ["WALL_PANEL": "0"]
         app.launch()
     }
 
@@ -21,8 +22,7 @@ final class SensiboRealUITests: XCTestCase {
 
     func testRealVerandahLightSwitchTogglesAndRestores() throws {
         try require(app.otherElements["device.dashboard"].waitForExistence(timeout: 15), "dashboard should appear")
-        let toggle = app.descendants(matching: .any)["light.toggle.verandah light"]
-        try require(toggle.waitForExistence(timeout: 15), "verandah light toggle should appear")
+        let toggle = try requireElement(waitForVerandahLightToggle(timeout: 15), "verandah light toggle should appear")
         try require(toggle.isHittable, "verandah light toggle should be tappable")
         try require(waitForNoTapoError(stableFor: 2, timeout: 8), "app should not show a Tapo error after launch")
 
@@ -75,6 +75,22 @@ final class SensiboRealUITests: XCTestCase {
         return false
     }
 
+    private func waitForVerandahLightToggle(timeout: TimeInterval) -> XCUIElement? {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            let candidates = [
+                app.descendants(matching: .any)["light.toggle.verandah light"],
+                app.buttons["verandah light"],
+                app.descendants(matching: .any)["verandah light"],
+            ]
+            if let match = candidates.first(where: { $0.exists }) {
+                return match
+            }
+            RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+        }
+        return nil
+    }
+
     private func hasTapoError() -> Bool {
         let errorText = app.staticTexts.matching(NSPredicate(format: [
             "label BEGINSWITH 'No Tapo'",
@@ -108,6 +124,11 @@ final class SensiboRealUITests: XCTestCase {
     private func require(_ condition: @autoclosure () -> Bool, _ message: String) throws {
         if condition() { return }
         throw SensiboRealUITestError.failed(message)
+    }
+
+    private func requireElement(_ element: XCUIElement?, _ message: String) throws -> XCUIElement {
+        guard let element else { throw SensiboRealUITestError.failed(message) }
+        return element
     }
 }
 
