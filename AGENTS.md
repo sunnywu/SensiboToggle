@@ -229,6 +229,32 @@ Wall‑panel gotchas when watching on the desktop:
 - For any watchable run, prefer **mock mode** (`SIMCTL_CHILD_SENSIBO_MOCK=1`)
   so toggling never changes the real AC.
 
+## Deploying to a physical device (wall-panel) — READ THE LOCAL RUNBOOK FIRST
+
+For any real-device build/install/launch, **read `config/DEPLOY.local.md` first**
+— it is **git-ignored** and holds the machine- and account-specific details that
+must not live in the committed repo: the phone's CoreDevice identifier/UDID, the
+free signing team on this Mac (and why the canonical `com.a.*` id can't sign here),
+the one-time physical prerequisites (**Trust / Developer Mode / trust-the-developer**),
+and the exact build + `devicctl` install + launch commands.
+
+Quick orientation so you know *why* it's a local file:
+
+- Target = a real iPhone on this Mac (iPhone SE 2nd gen). Discover it with
+   `xcrun devicectl list devices`; state must be `connected` with
+   `ddiServicesAvailable: true`.
+- **Signing twist:** the project expects `com.a.SensiboToggle`, but `com.a` is
+   owned by an Apple team **not** signed into this Mac's Xcode, so the build must
+   substitute a **unique id under the free team that *is* on this Mac** (id-swap is
+   build-time only; the project stays canonical). The team id and the id-swap recipe
+   are in the local runbook — **do not** paste them into committed files, commits,
+   terminal summaries, or final responses.
+- `config/local.config.json` (git-ignored) already has `wallPanel.enabled=true`, so
+   a device build runs as the kiosk panel; it's `mockMode=false` (real AC — a tap
+   changes the physical AC, so don't tap unless the user approves).
+- After install you must **Trust the developer** on the phone (one-time) or the
+   launch is denied. Commands + gotchas are in `config/DEPLOY.local.md`.
+
 ## Wall‑panel / kiosk mode
 
 Implemented on branch `feature/wall-panel-kiosk` (commit `3285523`): an old
