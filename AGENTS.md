@@ -9,6 +9,13 @@ Use this guide when an agent needs to build, test, install, or launch the iOS ap
 > `agent.md`/`AGENTS.md` and `context.md`/`CONTEXT.md` are the same files on
 > disk — use uppercase.
 
+## Editing Files (edit tool)
+
+When using the edit tool, ensure your `oldText` string matches the exact
+indentation of the target file. Keep the `oldText` block as small and specific
+as possible to minimize whitespace errors, or fallback to the `write` tool if
+whitespace causes a failure.
+
 ## Project
 
 - Root: `/Users/a/SensiboToggle`
@@ -227,7 +234,7 @@ Wall‑panel gotchas when watching on the desktop:
 Implemented on branch `feature/wall-panel-kiosk` (commit `3285523`): an old
 iPhone on the wall runs the panel forever under Guided Access — **never
 sleeps**, **blanks to a black overlay after `wallPanelIdleSeconds` (default
-2s)** of no movement, and **wakes on any touch** (tap / toggle restarts the
+15s)** of no movement, and **wakes on any touch** (tap / toggle restarts the
 countdown). iOS has no public hardware‑brightness API, so "dim to zero" is an
 opaque black overlay (`ContentView.WallBlankOverlay` + hidden status bar), not
 real brightness. Controlled by `wallPanel.{enabled,idleSeconds}` (default

@@ -88,12 +88,12 @@ final class ModelAndConfigTests: XCTestCase {
       }
     // MARK: - Wall-panel / kiosk configuration
 
-    /// Defaults: kiosk is OFF and the idle delay is 2s (the requested default),
+    /// Defaults: kiosk is OFF and the idle delay is 15s (the requested default),
     /// so a normal install is completely unaffected.
-    func testWallPanelDefaultsOffAndTwoSeconds() {
+    func testWallPanelDefaultsOffAndFifteenSeconds() {
         let config = Config.appConfig(from: [:], environment: [:])
         XCTAssertFalse(config.wallPanelEnabled)
-        XCTAssertEqual(config.wallPanelIdleSeconds, 2.0)
+        XCTAssertEqual(config.wallPanelIdleSeconds, 15.0)
     }
 
     /// Nested `wallPanel.enabled` / `wallPanel.idleSeconds` enable and configure
