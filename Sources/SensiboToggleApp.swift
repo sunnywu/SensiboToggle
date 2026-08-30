@@ -2,9 +2,9 @@ import SwiftUI
 import UIKit
 
 /// Flips the one OS switch the wall-panel mode needs: keep the screen awake so
-/// Guided Access never drops to the lock screen. iOS has no public brightness API,
-/// so "dim to zero" is the app's own black overlay (`IdleDimmingController`); this
-/// only stops the device from sleeping on its own.
+/// Guided Access never drops to the lock screen. Screen blanking and hardware
+/// brightness reduction are handled by `IdleDimmingController`; this only stops
+/// the device from sleeping on its own.
 private final class KioskAppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
