@@ -20,10 +20,16 @@
 		2C1C2A83B688CD622C429ADA /* BedroomOneWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7BC60115427DB1C1100D9F4B /* BedroomOneWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		354F88D9B0AE28DBFB9536E2 /* BedroomOneWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84973581A0D8A5A08D0112C8 /* BedroomOneWidget.swift */; };
 		41C50A4F7F037D83894BA68C /* TapoLiveIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75C216405F0A80920BDE5756 /* TapoLiveIntegrationTests.swift */; };
+		42F24CC242B192CFFCCE0356 /* NSWTrainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB2A69391156890AA80604C /* NSWTrainTests.swift */; };
+		4585AB41BA4C1AC47561B084 /* NSWTrainModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19EF9D195C25DDC8091739B1 /* NSWTrainModels.swift */; };
+		45CA47EC7CD168D6B5B32AA9 /* NSWTrainClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE841B532A6D2887BD23D511 /* NSWTrainClient.swift */; };
 		46CCBBC88FB10D23ECD92CB0 /* TapoClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB474D60B1074A87BC66041B /* TapoClient.swift */; };
+		489BBCB802C14ABE0803FAF3 /* NSWTrainModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19EF9D195C25DDC8091739B1 /* NSWTrainModels.swift */; };
 		54825B491EE10F9E2F6587D8 /* SensiboMenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5221F11E5390D29D829629D /* SensiboMenuBarView.swift */; };
 		5E52D422621BCB1475CC8A6D /* SensiboIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72D9FEEAEB70E7B51D520C11 /* SensiboIntegrationTests.swift */; };
+		628F24EC29C29165C8F5C6AF /* NSWTrainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1966F377B0D3FE913654D6DD /* NSWTrainController.swift */; };
 		62D7E8E962D8F1E3C75E1070 /* SensiboUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEE2F377FB308698C84C75F6 /* SensiboUITests.swift */; };
+		6487EF9EF0024D151EE171AB /* NSWTrainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1966F377B0D3FE913654D6DD /* NSWTrainController.swift */; };
 		67170D68E2A3753E7EF1DD27 /* IdleScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1CE5529B8215019E311B94 /* IdleScheduler.swift */; };
 		7A1C16428B5D66B2EBB573C7 /* SensiboClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B582D470FBB330F717BEEF /* SensiboClient.swift */; };
 		7ACBA74B7990109852732E80 /* TapoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E88F3ADF0E3090282F55E05 /* TapoController.swift */; };
@@ -45,6 +51,7 @@
 		F18A0865AEEC544480FED73C /* ControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631CD0FDFC7ABB1E8DA27F97 /* ControllerTests.swift */; };
 		F6F1231613BA76FB2026B41A /* MockSensiboClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F09FE865495208C5BBD3F3 /* MockSensiboClient.swift */; };
 		F731943950D8E9CF1A2A4595 /* BedroomOneWidgetSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6346A4A39E782748819A9E30 /* BedroomOneWidgetSupport.swift */; };
+		F7F8E8B547D4A568B6D70365 /* NSWTrainClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE841B532A6D2887BD23D511 /* NSWTrainClient.swift */; };
 		FB6076983D710A1840E9C4C3 /* local.config.json in Resources */ = {isa = PBXBuildFile; fileRef = 13CB4B19F3F8B99217847340 /* local.config.json */; };
 /* End PBXBuildFile section */
 
@@ -88,9 +95,12 @@
 
 /* Begin PBXFileReference section */
 		095F2BF139EE31BADC0E69C3 /* IdleDimmingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdleDimmingController.swift; sourceTree = "<group>"; };
+		0BB2A69391156890AA80604C /* NSWTrainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSWTrainTests.swift; sourceTree = "<group>"; };
 		1395B93A7E84334548E74AB6 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		13CB4B19F3F8B99217847340 /* local.config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = local.config.json; sourceTree = "<group>"; };
 		1718B11E445C1DE842B8B3F3 /* SensiboToggleMenuBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SensiboToggleMenuBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1966F377B0D3FE913654D6DD /* NSWTrainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSWTrainController.swift; sourceTree = "<group>"; };
+		19EF9D195C25DDC8091739B1 /* NSWTrainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSWTrainModels.swift; sourceTree = "<group>"; };
 		1A3B2E11CB1A29BBAD8250A6 /* TapoCrypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapoCrypto.swift; sourceTree = "<group>"; };
 		24EB4E8512E48BB03EDDE89A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		34ADE80A300588A2F0300D39 /* TapoCryptoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapoCryptoTests.swift; sourceTree = "<group>"; };
@@ -112,6 +122,7 @@
 		C2D483D876E7898B6BA736B8 /* SensiboUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SensiboUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8C9987BBFDA40C0534C9582 /* IdleDimmingControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdleDimmingControllerTests.swift; sourceTree = "<group>"; };
 		CD911F106829226C96E00717 /* SensiboTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = SensiboTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE841B532A6D2887BD23D511 /* NSWTrainClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSWTrainClient.swift; sourceTree = "<group>"; };
 		E12B69D07557FF38F9593772 /* BackoffPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackoffPolicyTests.swift; sourceTree = "<group>"; };
 		E15AF54B196757D7B16A67AB /* ACController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACController.swift; sourceTree = "<group>"; };
 		E175D9E35B3FB6BAFF6CBD5B /* SensiboMenuBarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensiboMenuBarApp.swift; sourceTree = "<group>"; };
@@ -156,6 +167,7 @@
 				631CD0FDFC7ABB1E8DA27F97 /* ControllerTests.swift */,
 				C8C9987BBFDA40C0534C9582 /* IdleDimmingControllerTests.swift */,
 				E95B9878E813CC65A62B7A19 /* ModelAndConfigTests.swift */,
+				0BB2A69391156890AA80604C /* NSWTrainTests.swift */,
 				72D9FEEAEB70E7B51D520C11 /* SensiboIntegrationTests.swift */,
 				4025C022E01A2F359E7B3F0C /* TapoControllerTests.swift */,
 				34ADE80A300588A2F0300D39 /* TapoCryptoTests.swift */,
@@ -185,6 +197,9 @@
 				8C1CE5529B8215019E311B94 /* IdleScheduler.swift */,
 				E5F09FE865495208C5BBD3F3 /* MockSensiboClient.swift */,
 				95A16FAEFA690B374A066998 /* Models.swift */,
+				CE841B532A6D2887BD23D511 /* NSWTrainClient.swift */,
+				1966F377B0D3FE913654D6DD /* NSWTrainController.swift */,
+				19EF9D195C25DDC8091739B1 /* NSWTrainModels.swift */,
 				45B582D470FBB330F717BEEF /* SensiboClient.swift */,
 				E42BD04DC4E867FB3F6DB8CB /* SensiboToggleApp.swift */,
 				BB474D60B1074A87BC66041B /* TapoClient.swift */,
@@ -436,6 +451,9 @@
 				01FC387E5D6A9BD57B999F2D /* IdleScheduler.swift in Sources */,
 				23C076E68AFAE75D886DBC16 /* MockSensiboClient.swift in Sources */,
 				0A3F807C07C167B2B39E3761 /* Models.swift in Sources */,
+				F7F8E8B547D4A568B6D70365 /* NSWTrainClient.swift in Sources */,
+				6487EF9EF0024D151EE171AB /* NSWTrainController.swift in Sources */,
+				489BBCB802C14ABE0803FAF3 /* NSWTrainModels.swift in Sources */,
 				7A1C16428B5D66B2EBB573C7 /* SensiboClient.swift in Sources */,
 				C1A1BEFE607E4E382F464477 /* SensiboMenuBarApp.swift in Sources */,
 				54825B491EE10F9E2F6587D8 /* SensiboMenuBarView.swift in Sources */,
@@ -450,6 +468,7 @@
 				F18A0865AEEC544480FED73C /* ControllerTests.swift in Sources */,
 				0222FC5D84DDDD0CFF7AC2AD /* IdleDimmingControllerTests.swift in Sources */,
 				113BD7F9DA76D2E2B54A1F2C /* ModelAndConfigTests.swift in Sources */,
+				42F24CC242B192CFFCCE0356 /* NSWTrainTests.swift in Sources */,
 				5E52D422621BCB1475CC8A6D /* SensiboIntegrationTests.swift in Sources */,
 				07584D23712637F83C23A947 /* TapoControllerTests.swift in Sources */,
 				7DA00822695C9AA0FA9079EF /* TapoCryptoTests.swift in Sources */,
@@ -469,6 +488,9 @@
 				67170D68E2A3753E7EF1DD27 /* IdleScheduler.swift in Sources */,
 				F6F1231613BA76FB2026B41A /* MockSensiboClient.swift in Sources */,
 				B20CEB3843EC07E3F1CAE8D4 /* Models.swift in Sources */,
+				45CA47EC7CD168D6B5B32AA9 /* NSWTrainClient.swift in Sources */,
+				628F24EC29C29165C8F5C6AF /* NSWTrainController.swift in Sources */,
+				4585AB41BA4C1AC47561B084 /* NSWTrainModels.swift in Sources */,
 				8D16B8E4696737AC350CAD65 /* SensiboClient.swift in Sources */,
 				EF01BA3CB9F0AC95610879A0 /* SensiboToggleApp.swift in Sources */,
 				46CCBBC88FB10D23ECD92CB0 /* TapoClient.swift in Sources */,

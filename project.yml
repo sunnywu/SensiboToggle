@@ -24,6 +24,9 @@ targets:
        - path: Sources/IdleDimmingController.swift
        - path: Sources/IdleScheduler.swift
        - path: Sources/ContentView.swift
+       - path: Sources/NSWTrainModels.swift
+       - path: Sources/NSWTrainClient.swift
+       - path: Sources/NSWTrainController.swift
        - path: Sources/MockSensiboClient.swift
        - path: Sources/Models.swift
        - path: Sources/SensiboClient.swift
@@ -60,6 +63,10 @@ targets:
        - path: Sources/Models.swift
        - path: Sources/MockSensiboClient.swift
        - path: Sources/SensiboClient.swift
+       # Next-train banner (shared core, same as the app).
+       - path: Sources/NSWTrainModels.swift
+       - path: Sources/NSWTrainClient.swift
+       - path: Sources/NSWTrainController.swift
        # Menu-bar entry point (macOS-only: MenuBarExtra). Not the iOS @main.
        - path: Sources/MenuBar/SensiboMenuBarApp.swift
        - path: Sources/MenuBar/SensiboMenuBarView.swift
@@ -101,6 +108,7 @@ targets:
        - path: Tests/Unit/BackoffPolicyTests.swift
        - path: Tests/Unit/ControllerTests.swift
        - path: Tests/Unit/ModelAndConfigTests.swift
+       - path: Tests/Unit/NSWTrainTests.swift
        - path: Tests/Unit/IdleDimmingControllerTests.swift
        - path: Tests/Unit/SensiboIntegrationTests.swift
        - path: Tests/Unit/TapoControllerTests.swift

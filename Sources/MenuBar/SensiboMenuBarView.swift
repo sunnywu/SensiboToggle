@@ -7,6 +7,7 @@ import SwiftUI
 /// menu bar so several units stay visible without any window.
 struct SensiboMenuBarView: View {
     @ObservedObject var controller: ACController
+    @ObservedObject var train: NSWTrainController
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -21,6 +22,7 @@ struct SensiboMenuBarView: View {
             Divider()
 
             content
+            trainSection
             Divider()
 
             Button("Refresh") {
@@ -86,6 +88,72 @@ struct SensiboMenuBarView: View {
                 }
                 .padding(.vertical, 2)
             }
+        }
+    }
+
+     @ViewBuilder
+      private var trainSection: some View {
+        if case .hidden = self.train.state {
+            EmptyView()                          // disabled: original layout, no extra divider
+        } else {
+            VStack(spacing: 0) {
+                Divider()
+                trainBanner
+                 }
+           }
+         }
+
+       @ViewBuilder
+    private var trainBanner: some View {
+        switch self.train.state {
+        case .hidden:
+            EmptyView()
+        case .loading:
+            Text("Loading train times…")
+                .font(.caption2)
+                .foregroundColor(.secondary)
+                .frame(maxWidth: .infinity)
+        case .empty:
+            Text("No Wynyard train in next 15 min")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .frame(maxWidth: .infinity)
+        case .stale:
+            Text("Train times unavailable")
+                .font(.caption)
+                .foregroundColor(.orange)
+                .frame(maxWidth: .infinity)
+        case .next(let rows):
+            VStack(alignment: .leading, spacing: 3) {
+                Text("Next trains")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
+                    MenuTrainDepartureLine(row: row)
+                }
+            }
+        }
+    }
+
+}
+
+private struct MenuTrainDepartureLine: View {
+    let row: NSWTrainDisplayRow
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Text(row.leadMinutesText)
+                .font(.body.weight(.bold))
+                .monospacedDigit()
+                .foregroundColor(row.isImminent ? .orange : .primary)
+                .frame(width: 58, alignment: .leading)
+            Text("🚃")
+            Text(row.destination)
+                .lineLimit(1)
+            Spacer(minLength: 4)
+            Text(row.clockText)
+                .monospacedDigit()
+                .foregroundColor(.secondary)
         }
     }
 }

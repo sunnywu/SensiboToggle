@@ -18,6 +18,7 @@ struct SensiboToggleApp: App {
       @StateObject private var controller: ACController
       @StateObject private var lightController: TapoController
       @StateObject private var idle: IdleDimmingController
+         @StateObject private var train: NSWTrainController
       // Disables the OS auto-lock while in wall-panel mode (see `KioskAppDelegate`).
    @UIApplicationDelegateAdaptor(KioskAppDelegate.self) private var appDelegate
 
@@ -25,6 +26,7 @@ struct SensiboToggleApp: App {
         let config = Config.load()
         let ac: ACController
         let lights: TapoController
+        let trains: NSWTrainController
         if config.mockMode {
             let mock = MockSensiboClient(seed: [
                 AirCon(id: "wZnPcb29", name: "", room: "Bedroom 1", on: true, temperature: 23, mode: "heat"),
@@ -39,6 +41,11 @@ struct SensiboToggleApp: App {
                ])
             ac = ACController(client: mock, pollIntervalSeconds: config.pollIntervalSeconds)
             lights = TapoController(client: mockLights)
+            // In mock mode the train banner is seeded in-memory so the footer
+            // can be demoed with zero network. City-match + next-2 selection still
+            // run over the seed, so the outbound row proves the filter works.
+            trains = NSWTrainController(config: config.nswTrain,
+                                        client: MockNSWTrainClient(seed: NSWTrainController.demoSeed()))
             } else {
               // Using the authentic Sensibo client with the API key from configuration
             let client = SensiboClient(baseURL: config.baseURL, apiKey: config.apiKey)
@@ -49,10 +56,15 @@ struct SensiboToggleApp: App {
                                      devices: config.tapoDevices)
             ac = ACController(client: client, pollIntervalSeconds: config.pollIntervalSeconds)
             lights = TapoController(client: tapo)
+            // Live TfNSW next-train feed, authenticated with `nswTrain.apiKey`
+            // (Authorization: apikey ...). No key / disabled -> hidden, never polls.
+            trains = NSWTrainController(config: config.nswTrain,
+                                        client: NSWTrainClient(apiKey: config.nswTrain.apiKey))
             }
 
          _controller = StateObject(wrappedValue: ac)
          _lightController = StateObject(wrappedValue: lights)
+            _train = StateObject(wrappedValue: trains)
 
           // Wall-panel / kiosk mode: keep the screen awake and blanket it in black
           // after `wallPanelIdleSeconds` of no movement, waking on any touch.
@@ -69,7 +81,12 @@ struct SensiboToggleApp: App {
         WindowGroup {
             ContentView(controller: self.controller,
                         lightController: self.lightController,
-                        idle: self.idle)
+                        idle: self.idle,
+                        train: self.train)
+               .task {
+                self.train.warmup()
+                  if self.train.config.isConfigured { self.train.startScheduler() }
+               }
               }
               }
           }
