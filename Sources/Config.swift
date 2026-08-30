@@ -54,6 +54,10 @@ struct AppConfig: Equatable {
            // disables polling. In mock mode the config layer forces this to 0 unless
            // `SENSIBO_POLL_INTERVAL` is set, so XCUITest stays hermetic.
     var pollIntervalSeconds: Double = 30.0
+             // Next-train arrival banner (Ashfield → the city). The `nswTrain` block lives
+             // in `config/local.config.json`; defaulted to `.default` so every existing
+             // `AppConfig(...)` call site keeps compiling unchanged.
+    var nswTrain: NSWTrainConfig = .default
 }
 
 enum Config {
@@ -71,11 +75,14 @@ enum Config {
             // Polling stays OFF in mock by default so XCUITest is hermetic; preview it
             // on the simulator with SIMCTL_CHILD_SENSIBO_POLL_INTERVAL=<secs>.
             let pollInterval = Self.parseDouble(env["SENSIBO_POLL_INTERVAL"]) ?? 0.0
+            let trainPollInterval = Self.parseDouble(env["NSW_TRAIN_POLL_INTERVAL"]) ?? 0.0
             return AppConfig(apiKey: "", baseURL: "https://home.sensibo.com/api/v2",
                              mockMode: true,
                              wallPanelEnabled: wallEnabled,
                              wallPanelIdleSeconds: wallIdle,
-                             pollIntervalSeconds: pollInterval)
+                             pollIntervalSeconds: pollInterval,
+                             nswTrain: NSWTrainConfig(apiKey: "mock", enabled: true,
+                                                      pollIntervalSeconds: trainPollInterval))
              }
 
         if let key = env["SENSIBO_API_KEY"], !key.isEmpty {
@@ -136,6 +143,8 @@ enum Config {
               ?? Self.parseDouble(obj["pollIntervalSeconds"])
               ?? 30.0
 
+        let nswTrain = Self.parseNSWTrain(obj, environment: env, mockMode: mock)
+
         return AppConfig(apiKey: key,
                          baseURL: base,
                          mockMode: mock,
@@ -144,7 +153,8 @@ enum Config {
                          tapoDevices: tapoDevices,
                          wallPanelEnabled: wallPanelEnabled,
                          wallPanelIdleSeconds: wallPanelIdleSeconds,
-                         pollIntervalSeconds: pollIntervalSeconds)
+                         pollIntervalSeconds: pollIntervalSeconds,
+                         nswTrain: nswTrain)
       }
 
         /// Parse a `Double` from an optional env string or JSON scalar; nil when
@@ -194,4 +204,61 @@ enum Config {
              }
         return out
           }
+
+             // MARK: - Next-train banner (TfNSW)
+
+          /// Parse the `nswTrain` block (TfNSW next-train banner). Precedence mirrors
+          /// `tapo`/`wallPanel`: env overrides `local.config.json`, which overrides the default.
+          /// In mock mode the key is synthetic, so polling is forced OFF unless
+          /// `NSW_TRAIN_POLL_INTERVAL` is set (keeps UI tests hermetic).
+     static func parseNSWTrain(_ obj: [String: Any],
+                               environment env: [String: String],
+                               mockMode: Bool) -> NSWTrainConfig {
+        let block = obj["nswTrain"] as? [String: Any]
+
+        let apiKey = env["NSW_TRAIN_API_KEY"] ?? (block?["apiKey"] as? String) ?? ""
+        let enabled = Self.parseBool(env["NSW_TRAIN_ENABLED"])
+                     ?? (block?["enabled"] as? Bool)
+                     ?? true
+        let originStation = (block?["originStation"] as? String)
+                       ?? env["NSW_TRAIN_ORIGIN"]
+                       ?? NSWTrainConfig.default.originStation
+        let stopID = env["NSW_TRAIN_STOP_ID"] ?? (block?["stopID"] as? String) ?? ""
+        let allowlist = Self.parseStringArray(block?["destinationAllowlist"])
+                    ?? NSWTrainConfig.default.destinationAllowlist
+
+                 // Poll interval: in mock mode default to 0 (hermetic), else 60s default;
+                 // `NSW_TRAIN_POLL_INTERVAL` always overrides (env > JSON > default).
+        let pollEnv = Self.parseDouble(env["NSW_TRAIN_POLL_INTERVAL"])
+        let pollFromJSON = Self.parseDouble(block?["pollIntervalSeconds"])
+        let pollIntervalSeconds: Double
+        if let pollEnv {
+            pollIntervalSeconds = pollEnv
+         } else if mockMode {
+            pollIntervalSeconds = pollFromJSON ?? 0.0
+         } else {
+            pollIntervalSeconds = pollFromJSON ?? 60.0
+         }
+
+        let staleAfterSeconds = Self.parseDouble(env["NSW_TRAIN_STALE_AFTER"])
+                    ?? Self.parseDouble(block?["staleAfterSeconds"])
+                    ?? 600.0
+
+        return NSWTrainConfig(apiKey: apiKey,
+                              enabled: enabled,
+                              originStation: originStation,
+                              stopID: stopID,
+                              destinationAllowlist: allowlist,
+                              pollIntervalSeconds: pollIntervalSeconds,
+                              staleAfterSeconds: staleAfterSeconds)
+           }
+
+          /// JSON string-array, trimmed; empty/nil -> nil, so the caller can fall back
+          /// to the default allowlist.
+     static func parseStringArray(_ raw: Any?) -> [String]? {
+        guard let array = raw as? [Any] else { return nil }
+        let out = array.compactMap { ($0 as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) }
+                       .filter { !$0.isEmpty }
+        return out.isEmpty ? nil : out
+           }
 }

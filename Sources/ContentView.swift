@@ -6,6 +6,9 @@ struct ContentView: View {
       // Idle-dimming controller. Defaults to an inert instance so previews compile
       // without wiring; the app injects the real one from config.
     @ObservedObject var idle: IdleDimmingController = IdleDimmingController(enabled: false)
+       // Next-train banner. Inert default (hidden) so previews compile without
+        // wiring; the app injects the real controller with the client + config.
+       @ObservedObject var train: NSWTrainController = NSWTrainController(config: .default, client: MockNSWTrainClient(seed: []))
      @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
@@ -85,6 +88,9 @@ struct ContentView: View {
           }
           .simultaneousGesture(TapGesture().onEnded { idle.registerActivity() })
           .statusBarHidden(idle.enabled)   // deprecated, still honoured; truly blank wall
+                 .safeAreaInset(edge: .bottom) {
+                      self.trainFooter
+                  }
           .onChange(of: scenePhase) { _, phase in
               switch phase {
               case .active:
@@ -98,6 +104,51 @@ struct ContentView: View {
     private var isLoading: Bool {
              !controller.isReady && controller.error == nil
       }
+        // --- Bottom-pinned next-train banner -------------------------------
+        // Always visible via `.safeAreaInset`, so the user sees the next city
+        // trains without scrolling. Hidden entirely when the banner isn't configured.
+     @ViewBuilder
+    private var trainFooter: some View {
+        switch self.train.state {
+        case .hidden:
+            EmptyView()
+        case .loading:
+            Text("Loading train times…")
+                  .font(.subheadline)
+                  .foregroundColor(.secondary)
+                  .frame(maxWidth: .infinity, alignment: .leading)
+                  .padding(.horizontal, 14)
+                  .padding(.vertical, 6)
+        case .empty:
+            Text("No city train in next 15 min")
+                  .font(.subheadline)
+                  .foregroundColor(.secondary)
+                  .frame(maxWidth: .infinity, alignment: .leading)
+                  .padding(.horizontal, 14)
+                  .padding(.vertical, 6)
+        case .stale:
+            Text("Train times unavailable")
+                  .font(.subheadline)
+                  .foregroundColor(.orange)
+                  .frame(maxWidth: .infinity, alignment: .leading)
+                  .padding(.horizontal, 14)
+                  .padding(.vertical, 6)
+        case .next(let rows):
+            VStack(alignment: .leading, spacing: 3) {
+                ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
+                    Text(row.text)
+                          .font(.body)
+                          .monospacedDigit()
+                       .lineLimit(1)
+                       .minimumScaleFactor(0.62)
+                          .frame(maxWidth: .infinity, alignment: .leading)
+                }
+              }
+              .padding(.horizontal, 14)
+              .padding(.vertical, 6)
+          }
+      }
+
 }
 
 /// Full-bleed opaque black view shown while the panel is idle. The controller
@@ -288,6 +339,8 @@ struct ContentView_Previews: PreviewProvider {
           ]))
                // Inert idle controller: previews don't blank.
         let idle = IdleDimmingController(enabled: false)
-        return ContentView(controller: controller, lightController: lightController, idle: idle)
+        let train = NSWTrainController(config: NSWTrainConfig(apiKey: "mock", enabled: true),
+                                    client: MockNSWTrainClient(seed: [NSWTrainArrival(destination: "Wynyard", departure: Date().addingTimeInterval(7 * 60))]))
+        return ContentView(controller: controller, lightController: lightController, idle: idle, train: train)
    }
 }

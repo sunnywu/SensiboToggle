@@ -1,19 +1,38 @@
 {
-    "apiKey": "<your Sensibo API key>",
-    "baseURL": "https://home.sensibo.com/api/v2",
-    "mockMode": false,
-    "tapo": {
+   "apiKey": "<your Sensibo API key>",
+   "baseURL": "https://home.sensibo.com/api/v2",
+   "mockMode": false,
+   "tapo": {
       "email": "<your Tapo/Kasa account email>",
       "password": "<your Tapo password>",
       "devices": [
-        { "name": "verandah light", "ip": "<local IP, e.g. 192.168.1.50>", "type": "L535" }
+         {
+            "name": "verandah light",
+            "ip": "<local IP, e.g. 192.168.1.50>",
+            "type": "L535"
+         }
       ]
-    },
-    "wallPanel": {
+   },
+   "wallPanel": {
       "enabled": false,
       "idleSeconds": 15
-    },
-    "polling": {
-         "intervalSeconds": 30
-    }
-  }
+   },
+   "polling": {
+      "intervalSeconds": 30
+   },
+   "nswTrain": {
+      "apiKey": "<your NSW Transport Open Data API key (Authorization: apikey …)>",
+      "enabled": true,
+      "originStation": "Ashfield",
+      "stopID": "",
+      "destinationAllowlist": [
+         "Wynyard",
+         "Central",
+         "Town Hall",
+         "Circular Quay",
+         "Barangaroo"
+      ],
+      "pollIntervalSeconds": 60,
+      "staleAfterSeconds": 600
+   }
+}

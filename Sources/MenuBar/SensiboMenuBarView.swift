@@ -7,6 +7,7 @@ import SwiftUI
 /// menu bar so several units stay visible without any window.
 struct SensiboMenuBarView: View {
     @ObservedObject var controller: ACController
+    @ObservedObject var train: NSWTrainController
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -21,6 +22,7 @@ struct SensiboMenuBarView: View {
             Divider()
 
             content
+            trainSection
             Divider()
 
             Button("Refresh") {
@@ -88,4 +90,51 @@ struct SensiboMenuBarView: View {
             }
         }
     }
+
+     @ViewBuilder
+      private var trainSection: some View {
+        if case .hidden = self.train.state {
+            EmptyView()                          // disabled: original layout, no extra divider
+        } else {
+            VStack(spacing: 0) {
+                Divider()
+                trainBanner
+                 }
+           }
+         }
+
+       @ViewBuilder
+    private var trainBanner: some View {
+        switch self.train.state {
+        case .hidden:
+            EmptyView()
+        case .loading:
+            Text("Loading train times…")
+                .font(.caption2)
+                .foregroundColor(.secondary)
+                .frame(maxWidth: .infinity)
+        case .empty:
+            Text("No city train in next 15 min")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .frame(maxWidth: .infinity)
+        case .stale:
+            Text("Train times unavailable")
+                .font(.caption)
+                .foregroundColor(.orange)
+                .frame(maxWidth: .infinity)
+        case .next(let rows):
+            VStack(alignment: .leading, spacing: 3) {
+                Text("Next trains")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
+                    Text(row.text)
+                        .font(.body)
+                        .monospacedDigit()
+                }
+            }
+        }
+    }
+
 }

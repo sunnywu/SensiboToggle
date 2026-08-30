@@ -16,10 +16,12 @@ import SwiftUI
 @main
 struct SensiboMenuBarApp: App {
     @StateObject private var controller: ACController
+    @StateObject private var train: NSWTrainController
 
     init() {
         let config = Config.load()
         let controller: ACController
+        let trains: NSWTrainController
         if config.mockMode {
             let mock = MockSensiboClient(seed: [
                 AirCon(id: "wZnPcb29", name: "", room: "Bedroom 1", on: true, temperature: 23, mode: "heat"),
@@ -28,21 +30,29 @@ struct SensiboMenuBarApp: App {
                 AirCon(id: "Xo5hnkKY", name: "", room: "Bedroom 3", on: false, temperature: 21, mode: "auto"),
               ])
             controller = ACController(client: mock, pollIntervalSeconds: config.pollIntervalSeconds)
+            trains = NSWTrainController(config: config.nswTrain,
+                                        client: MockNSWTrainClient(seed: NSWTrainController.demoSeed()))
            } else {
             // Using the authentic Sensibo client with the API key from configuration
             let client = SensiboClient(baseURL: config.baseURL, apiKey: config.apiKey)
             controller = ACController(client: client, pollIntervalSeconds: config.pollIntervalSeconds)
+            trains = NSWTrainController(config: config.nswTrain,
+                                        client: NSWTrainClient(apiKey: config.nswTrain.apiKey))
           }
         _controller = StateObject(wrappedValue: controller)
+            _train = StateObject(wrappedValue: trains)
 
         // Preload before the user opens the menu: fetch device state at launch so
         // the first popover is instant instead of loading on the first click.
         controller.warmup()
+        trains.warmup()
+         // Repeat the poll at the configured interval when the banner is configured.
+         if trains.config.isConfigured { trains.startScheduler() }
         }
 
     var body: some Scene {
         MenuBarExtra {
-            SensiboMenuBarView(controller: controller)
+            SensiboMenuBarView(controller: controller, train: train)
         } label: {
             // The bar icon itself reflects state so on/off is visible at a glance.
             Image(systemName: controller.acs.contains(where: { $0.on }) ? "flame.fill" : "flame")

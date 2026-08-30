@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "1430"
-   wasCreatedForAppExtension = "NO"
+   wasCreatedForAppExtension = "YES"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -61,9 +61,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1BE1C9AF2B7B6BE21858FA55"
-            BuildableName = "SensiboToggle.app"
-            BlueprintName = "SensiboToggle"
+            BlueprintIdentifier = "E34BAB9C6E3051B15C587F2C"
+            BuildableName = "BedroomOneWidgetExtension.appex"
+            BlueprintName = "BedroomOneWidgetExtension"
             ReferencedContainer = "container:SensiboToggle.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -105,9 +105,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1BE1C9AF2B7B6BE21858FA55"
-            BuildableName = "SensiboToggle.app"
-            BlueprintName = "SensiboToggle"
+            BlueprintIdentifier = "E34BAB9C6E3051B15C587F2C"
+            BuildableName = "BedroomOneWidgetExtension.appex"
+            BlueprintName = "BedroomOneWidgetExtension"
             ReferencedContainer = "container:SensiboToggle.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -122,9 +122,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1BE1C9AF2B7B6BE21858FA55"
-            BuildableName = "SensiboToggle.app"
-            BlueprintName = "SensiboToggle"
+            BlueprintIdentifier = "E34BAB9C6E3051B15C587F2C"
+            BuildableName = "BedroomOneWidgetExtension.appex"
+            BlueprintName = "BedroomOneWidgetExtension"
             ReferencedContainer = "container:SensiboToggle.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
