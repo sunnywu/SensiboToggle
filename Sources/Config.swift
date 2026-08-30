@@ -48,6 +48,12 @@ struct AppConfig: Equatable {
         //      Defaults to 15s for the wall-panel use case; fully configurable.
     var wallPanelEnabled: Bool = false
     var wallPanelIdleSeconds: Double = 15.0
+           // How often (seconds) to re-read pod state from Sensibo to catch on/off +
+           // temperature/mode changes made elsewhere (the Sensibo app, a remote, a
+           // schedule) and refresh the UI. Default 30s; a value of 0 (or less)
+           // disables polling. In mock mode the config layer forces this to 0 unless
+           // `SENSIBO_POLL_INTERVAL` is set, so XCUITest stays hermetic.
+    var pollIntervalSeconds: Double = 30.0
 }
 
 enum Config {
@@ -62,15 +68,21 @@ enum Config {
             // `SIMCTL_CHILD_WALL_PANEL=1` [and `SIMCTL_CHILD_WALL_PANEL_IDLE_SECONDS`].
             let wallEnabled = Self.parseBool(env["WALL_PANEL"]) ?? false
             let wallIdle = Self.parseDouble(env["WALL_PANEL_IDLE_SECONDS"]) ?? 15.0
+            // Polling stays OFF in mock by default so XCUITest is hermetic; preview it
+            // on the simulator with SIMCTL_CHILD_SENSIBO_POLL_INTERVAL=<secs>.
+            let pollInterval = Self.parseDouble(env["SENSIBO_POLL_INTERVAL"]) ?? 0.0
             return AppConfig(apiKey: "", baseURL: "https://home.sensibo.com/api/v2",
                              mockMode: true,
                              wallPanelEnabled: wallEnabled,
-                             wallPanelIdleSeconds: wallIdle)
+                             wallPanelIdleSeconds: wallIdle,
+                             pollIntervalSeconds: pollInterval)
              }
 
         if let key = env["SENSIBO_API_KEY"], !key.isEmpty {
             let base = env["SENSIBO_BASE_URL"] ?? "https://home.sensibo.com/api/v2"
-            return AppConfig(apiKey: key, baseURL: base, mockMode: false)
+            // 30s default; SENSIBO_POLL_INTERVAL overrides it without a config file.
+            let pollInterval = Self.parseDouble(env["SENSIBO_POLL_INTERVAL"]) ?? 30.0
+            return AppConfig(apiKey: key, baseURL: base, mockMode: false, pollIntervalSeconds: pollInterval)
              }
 
         if let url = Bundle.main.url(forResource: "local", withExtension: "config.json"),
@@ -113,6 +125,17 @@ enum Config {
               ?? Self.parseDouble(obj["wallPanelIdleSeconds"])
               ?? 15.0
 
+              // Polling: re-read pod state to catch changes made elsewhere and
+              // reconcile the UI. Precedence mirrors wallPanel: env > nested
+              // polling.intervalSeconds (or polling.interval) > flat pollIntervalSeconds
+              // > default 30s. A value of 0 (or less) disables polling.
+        let polling = obj["polling"] as? [String: Any]
+        let pollIntervalSeconds = Self.parseDouble(env["SENSIBO_POLL_INTERVAL"])
+              ?? Self.parseDouble(polling?["intervalSeconds"])
+              ?? Self.parseDouble(polling?["interval"])
+              ?? Self.parseDouble(obj["pollIntervalSeconds"])
+              ?? 30.0
+
         return AppConfig(apiKey: key,
                          baseURL: base,
                          mockMode: mock,
@@ -120,7 +143,8 @@ enum Config {
                          tapoPassword: tapoPassword,
                          tapoDevices: tapoDevices,
                          wallPanelEnabled: wallPanelEnabled,
-                         wallPanelIdleSeconds: wallPanelIdleSeconds)
+                         wallPanelIdleSeconds: wallPanelIdleSeconds,
+                         pollIntervalSeconds: pollIntervalSeconds)
       }
 
         /// Parse a `Double` from an optional env string or JSON scalar; nil when

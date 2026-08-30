@@ -162,4 +162,56 @@ final class ModelAndConfigTests: XCTestCase {
         XCTAssertNil(Config.parseDouble("not-a-number"))
     }
 
+
+    // MARK: - Polling configuration
+
+    /// The polling interval defaults to 30s (the requested default) so a plain
+    /// install polls without any config.
+    func testPollIntervalDefaultsToThirty() {
+        let config = Config.appConfig(from: [:], environment: [:])
+        XCTAssertEqual(config.pollIntervalSeconds, 30.0)
+        }
+
+    /// A nested `polling.intervalSeconds` (or the shorter `polling.interval`) configures it.
+    func testPollFromNestedJson() {
+        let five = Config.appConfig(from: ["polling": ["intervalSeconds": 5.0]], environment: [:])
+        XCTAssertEqual(five.pollIntervalSeconds, 5.0)
+
+        let seven = Config.appConfig(from: ["polling": ["interval": 7]], environment: [:])
+        XCTAssertEqual(seven.pollIntervalSeconds, 7.0, "the shorter `interval` key is honoured too")
+        }
+
+    /// A flat `pollIntervalSeconds` key is accepted, and a string value parses to a Double.
+    func testPollFromFlatJson() {
+        let config = Config.appConfig(from: ["pollIntervalSeconds": "8"], environment: [:])
+        XCTAssertEqual(config.pollIntervalSeconds, 8.0)
+        }
+
+    /// An environment override wins over nested/flat JSON, matching tapo/wallPanel precedence.
+    func testPollEnvOverridesJson() {
+        let config = Config.appConfig(from: ["polling": ["intervalSeconds": 7.0]],
+                                      environment: ["SENSIBO_POLL_INTERVAL": "3"])
+        XCTAssertEqual(config.pollIntervalSeconds, 3.0, "SENSIBO_POLL_INTERVAL must win over JSON")
+        }
+
+    /// A nested interval of 0 disables polling at the config layer.
+    func testPollZeroIntervalDisables() {
+        let config = Config.appConfig(from: ["polling": ["intervalSeconds": 0]], environment: [:])
+        XCTAssertEqual(config.pollIntervalSeconds, 0.0)
+        }
+
+    /// Mock mode forces polling OFF by default so XCUITest is hermetic; only
+    /// SENSIBO_POLL_INTERVAL re-enables it (for an in-simulator preview).
+    func testMockModeKeepsPollingOffUnlessRequested() {
+        setenv("SENSIBO_MOCK", "1", 1)
+        defer { unsetenv("SENSIBO_MOCK") }
+        var off = Config.load()
+        XCTAssertEqual(off.pollIntervalSeconds, 0.0, "mock is poll-off by default")
+
+        setenv("SENSIBO_POLL_INTERVAL", "5", 1)
+        defer { unsetenv("SENSIBO_POLL_INTERVAL") }
+        off = Config.load()
+        XCTAssertEqual(off.pollIntervalSeconds, 5.0, "SENSIBO_POLL_INTERVAL=5 re-enables in mock")
+        }
+
 }

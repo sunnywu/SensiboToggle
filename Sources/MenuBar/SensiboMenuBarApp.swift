@@ -27,11 +27,11 @@ struct SensiboMenuBarApp: App {
                 AirCon(id: "hz5nXQHC", name: "", room: "Living Room", on: false, temperature: 22, mode: "auto"),
                 AirCon(id: "Xo5hnkKY", name: "", room: "Bedroom 3", on: false, temperature: 21, mode: "auto"),
               ])
-            controller = ACController(client: mock)
+            controller = ACController(client: mock, pollIntervalSeconds: config.pollIntervalSeconds)
            } else {
             // Using the authentic Sensibo client with the API key from configuration
             let client = SensiboClient(baseURL: config.baseURL, apiKey: config.apiKey)
-            controller = ACController(client: client)
+            controller = ACController(client: client, pollIntervalSeconds: config.pollIntervalSeconds)
           }
         _controller = StateObject(wrappedValue: controller)
 

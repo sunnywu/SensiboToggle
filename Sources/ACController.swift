@@ -16,7 +16,30 @@ final class ACController: ObservableObject {
 
     let client: SensiboClientProtocol
 
-    init(client: SensiboClientProtocol) { self.client = client }
+        // How often (seconds) to re-read pod state to catch on/off + temperature
+        // changes made elsewhere (the Sensibo app, a remote, a device schedule) and
+        // refresh the UI. `<= 0` disables polling. Defaults to 0 so hermetic unit tests
+        // that don't pass it stay inert; the app supplies the configured value
+        // (30s in live mode, off in mock mode).
+    let pollIntervalSeconds: TimeInterval
+
+        // Shared one-shot/cancellable timer seam -- the same `TaskIdleScheduler` the
+        // wall-panel dimmer uses. Injected so tests can drive polls with no real
+        // `Task.sleep`.
+    private let scheduler: any IdleScheduler
+        // The live poll timer, if any (nil when polling is off or between ticks).
+    private var pollTimer: (any IdleTimer)?
+
+    init(client: SensiboClientProtocol,
+         pollIntervalSeconds: TimeInterval = 0,
+         scheduler: any IdleScheduler = TaskIdleScheduler()) {
+        self.client = client
+        self.pollIntervalSeconds = pollIntervalSeconds
+        self.scheduler = scheduler
+           // Arm the recurring poll on launch when enabled. `reschedulePoll` guards the
+           // interval, so the default (0) case is a safe no-op that leaves no timer.
+        self.reschedulePoll()
+      }
 
     /// Fire-and-forget warm-up so the first screen and first tap pay no cost.
     func warmup() {
@@ -105,4 +128,59 @@ final class ACController: ObservableObject {
             self.pending.remove(podId)
         }
     }
+
+      // MARK: - Polling
+
+      /// Reconcile pod state from the server into `acs` so changes made *elsewhere*
+      /// (the Sensibo app, a remote, a scheduled turn-on/off) refresh the UI without an
+      /// explicit user fetch.
+      ///
+      /// - No-op when polling is disabled (`pollIntervalSeconds <= 0`) or on a transient
+      ///   fetch failure, so a network blip never blanks or churns the UI.
+      /// - Skips any pod in `pending`, so a poll can never clobber an in-flight
+      ///   optimistic toggle (the tap is authoritative until its server confirm lands).
+      /// - Preserves the current order and appends only brand-new pods, so the UI never
+      ///   reorders mid-poll, and writes `acs` only when something actually changed.
+    func refresh() async {
+        guard self.pollIntervalSeconds > 0 else { return }
+        let fresh = try? await self.client.pods()
+        guard let fresh else { return }
+
+        let freshByID = Dictionary(fresh.map { ($0.id, $0) },
+                                   uniquingKeysWith: { first, _ in first })
+        var updated = self.acs
+        for i in updated.indices where !self.pending.contains(updated[i].id) {
+            guard let f = freshByID[updated[i].id] else { continue }
+            updated[i].on = f.on
+            updated[i].temperature = f.temperature
+            updated[i].mode = f.mode
+            if let room = f.room, !room.isEmpty { updated[i].room = room }
+         }
+        for f in fresh where !updated.contains(where: { $0.id == f.id }) {
+            updated.append(f)
+         }
+
+        if updated != self.acs { self.acs = updated }
+       }
+
+       /// Arm the recurring poll. Each tick re-arms the *next* one first so the cadence
+       /// is a clean multiple of `pollIntervalSeconds` even when a refresh is slow, then
+       /// reconciles in the background. Inert when the interval is `<= 0`.
+     private func reschedulePoll() {
+        self.pollTimer?.cancel()
+        guard self.pollIntervalSeconds > 0 else {
+            self.pollTimer = nil
+            return
+         }
+        self.pollTimer = self.scheduler.schedule(after: self.pollIntervalSeconds) { [weak self] in
+             // The scheduler always delivers on the main actor (production
+             // `TaskIdleScheduler` is `@MainActor`; the test scheduler runs this
+             // synchronously), so the `@Published` write below is always on main.
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                self.reschedulePoll()                     // re-arm the next tick
+                Task { @MainActor in await self.refresh() }
+             }
+        }
+       }
 }
