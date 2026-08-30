@@ -37,7 +37,7 @@ struct SensiboToggleApp: App {
             let mockLights = MockTapoClient(seed: [
                 Light(id: "Verandah", name: "Verandah", room: "Verandah", on: false),
                ])
-            ac = ACController(client: mock)
+            ac = ACController(client: mock, pollIntervalSeconds: config.pollIntervalSeconds)
             lights = TapoController(client: mockLights)
             } else {
               // Using the authentic Sensibo client with the API key from configuration
@@ -47,7 +47,7 @@ struct SensiboToggleApp: App {
             let tapo = KLAPTapoClient(email: config.tapoEmail,
                                      password: config.tapoPassword,
                                      devices: config.tapoDevices)
-            ac = ACController(client: client)
+            ac = ACController(client: client, pollIntervalSeconds: config.pollIntervalSeconds)
             lights = TapoController(client: tapo)
             }
 

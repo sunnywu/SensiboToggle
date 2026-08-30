@@ -12,5 +12,8 @@
     "wallPanel": {
       "enabled": false,
       "idleSeconds": 15
+    },
+    "polling": {
+         "intervalSeconds": 30
     }
   }

@@ -22,6 +22,7 @@ targets:
        - path: Sources/BedroomOneWidgetSupport.swift
        - path: Sources/Config.swift
        - path: Sources/IdleDimmingController.swift
+       - path: Sources/IdleScheduler.swift
        - path: Sources/ContentView.swift
        - path: Sources/MockSensiboClient.swift
        - path: Sources/Models.swift
@@ -53,6 +54,7 @@ targets:
     platform: macOS
     sources:
        # Shared, platform-agnostic core — identical behaviour to the app.
+       - path: Sources/IdleScheduler.swift
        - path: Sources/ACController.swift
        - path: Sources/Config.swift
        - path: Sources/Models.swift
