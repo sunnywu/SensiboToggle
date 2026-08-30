@@ -23,6 +23,7 @@ whitespace causes a failure.
 - Scheme: `SensiboToggle`
 - Bundle id: `com.a.SensiboToggle`
 - Preferred simulator: `iPhone 17`
+- SE-sized wall-panel simulator used in recent checks: `Sensibo-SE2-Tapo`
 - Live config file: `config/local.config.json`
 
 Treat `config/local.config.json` as secret-bearing. It is git-ignored. Do not print the API key; report only whether it is configured.
@@ -118,6 +119,63 @@ xcrun simctl io booted screenshot build/sensibo-iphone17.png
 ```
 
 `No display specified` is normal when the simulator has one display.
+
+## NSW Train Banner
+
+The train footer is read-only: it never touches Sensibo, Tapo, or any real
+device state. It reads the TfNSW Trip Planner API key from the secret-bearing
+`config/local.config.json` block `nswTrain.apiKey`; never print that key.
+
+Current live route: Ashfield → Wynyard.
+
+- Origin stop id: `213110` (`NSWTrainConfig.ashfieldStopID`)
+- Destination stop id: `200080` (`NSWTrainConfig.wynyardStopID`)
+- Preferred endpoint: `/v1/tp/trip`, not `/departure_mon`.
+- Reason: `departure_mon` did not provide a downstream stop sequence in local
+  testing, even with obvious stop-sequence flags, so filtering by destination
+  text is brittle. `/trip` asks TfNSW directly for journeys from Ashfield to
+  Wynyard, so services displayed as `Chatswood`, `Lindfield`, or `Hornsby via
+  Gordon` are valid when their path reaches Wynyard.
+- The destination is now a **stop id**, not a destination *string* the app has to
+  guess. It lives in config as `nswTrain.destinationStopID` (default `200080`
+  Wynyard) with an optional human `destinationStation` label; env overrides are
+  `NSW_TRAIN_DESTINATION` / `NSW_TRAIN_DESTINATION_STOP_ID`.
+- Path selected per poll: a non-empty `destinationStopID` makes the controller
+  call the route path (`journeyDepartures` → `/trip`) and **ignore the
+  allowlist entirely**; an empty `destinationStopID` falls back to the old
+  `departure_mon` + `destinationAllowlist` substring matching (kept as a safety
+  net, not the primary path). The broadened `destinationAllowlist` is
+  fallback-only, so never rely on it for live display or prune it without
+  reasoning about the no-stop-id fallback.
+
+Parser rule for `/trip`: read `journeys[].legs[]`, take the first leg whose
+`transportation.product.class == 1`, read departure from
+`origin.departureTimeEstimated` falling back to `origin.departureTimePlanned`,
+and display `transportation.destination.name`.
+
+Train footer UI rule: minutes are the primary glance target. Each
+`NSWTrainDisplayRow` carries `minutes`, an `isImminent` flag (`minutes <= 5`),
+and a `leadMinutesText` ("7 min" — the UI drops the old "in " prefix). Both the
+iOS view and menu-bar view render a fixed-width bold `N min` first, in system
+primary/black normally and amber/orange for imminent rows, then the train emoji,
+the destination, and a secondary clock time. The plain-text `row.text`
+accessor is now `"N min 🚃 <dest> HH:MM"` for non-view contexts.
+
+Focused train verification:
+
+```sh
+cd /Users/a/SensiboToggle
+xcodebuild \
+  -project SensiboToggle.xcodeproj \
+  -scheme SensiboToggle \
+  -destination 'platform=iOS Simulator,name=Sensibo-SE2-Tapo' \
+  -derivedDataPath /private/tmp/SensiboToggleDerivedData \
+  -only-testing:SensiboTests/NSWTrainSelectionTests \
+  -only-testing:SensiboTests/NSWTrainParsingTests \
+  -only-testing:SensiboTests/NSWTrainConfigTests \
+  -only-testing:SensiboTests/NSWTrainControllerTests \
+  test
+```
 
 ## Menu Bar Target
 

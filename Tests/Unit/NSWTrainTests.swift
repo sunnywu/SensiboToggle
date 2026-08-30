@@ -35,6 +35,14 @@ final class NSWTrainSelectionTests: XCTestCase {
         XCTAssertFalse(NSWTrainSelection.matchesCity(destination: "Wynyard", allowlist: []))     // empty allowlist matches nothing
       }
 
+    func testAshfieldCityboundDestinationsFromLiveFeedShape() {
+        let allowlist = NSWTrainConfig.default.destinationAllowlist
+        XCTAssertTrue(NSWTrainSelection.matchesCity(destination: "Gordon via Lindfield", allowlist: allowlist))
+        XCTAssertTrue(NSWTrainSelection.matchesCity(destination: "Hornsby via Gordon", allowlist: allowlist))
+        XCTAssertFalse(NSWTrainSelection.matchesCity(destination: "Hornsby via Strathfield", allowlist: allowlist))
+        XCTAssertFalse(NSWTrainSelection.matchesCity(destination: "Penrith via Parramatta", allowlist: allowlist))
+    }
+
     func testMinutesCeilAndNowWithinAMinute() {
         let now = utc("2026-08-30T06:30:00Z")
           // 0–5s away reads as "now".
@@ -75,6 +83,38 @@ final class NSWTrainSelectionTests: XCTestCase {
         XCTAssertEqual(pick[1].departure, now.addingTimeInterval(12 * 60))
       }
 
+    func testNextTwoHandlesAshfieldLiveFeedDestinations() {
+        let now = utc("2026-08-30T10:27:00Z")
+        let arrivals = [
+            NSWTrainArrival(destination: "Penrith via Parramatta", departure: now.addingTimeInterval(2 * 60)),
+            NSWTrainArrival(destination: "Gordon via Lindfield", departure: now.addingTimeInterval(9 * 60)),
+            NSWTrainArrival(destination: "Hornsby via Gordon", departure: now.addingTimeInterval(13 * 60)),
+            NSWTrainArrival(destination: "Hornsby via Strathfield", departure: now.addingTimeInterval(12 * 60)),
+        ]
+        let pick = NSWTrainSelection.nextCitybound(
+            arrivals,
+            allowlist: NSWTrainConfig.default.destinationAllowlist,
+            now: now,
+            lookAheadMinutes: 15,
+            limit: 2)
+        XCTAssertEqual(pick.map(\.destination), ["Gordon via Lindfield", "Hornsby via Gordon"])
+    }
+
+    func testDirectJourneyDeparturesDoNotNeedDestinationAllowlist() {
+        let now = utc("2026-08-30T10:45:00Z")
+        let arrivals = [
+            NSWTrainArrival(destination: "Lindfield", departure: now.addingTimeInterval(6 * 60)),
+            NSWTrainArrival(destination: "Hornsby via Gordon", departure: now.addingTimeInterval(9 * 60)),
+            NSWTrainArrival(destination: "Chatswood", departure: now.addingTimeInterval(20 * 60)),
+        ]
+        let pick = NSWTrainSelection.nextDepartures(
+            arrivals,
+            now: now,
+            lookAheadMinutes: 15,
+            limit: 2)
+        XCTAssertEqual(pick.map(\.destination), ["Lindfield", "Hornsby via Gordon"])
+    }
+
     func testEmptyWhenNoCityTrainInWindow() {
         let now = utc("2026-08-30T06:30:00Z")
           // City-bound, but 60 min out — beyond the 15-min window.
@@ -93,14 +133,52 @@ final class NSWTrainSelectionTests: XCTestCase {
              now: now,
              timeZone: TimeZone(identifier: "UTC")!)
         XCTAssertEqual(rows.count, 2)
-        XCTAssertEqual(rows[0].text, "Wynyard via St Leonards 06:37 in 7 min")
-        XCTAssertEqual(rows[1].text, "Town Hall 06:44 in 14 min")
+        XCTAssertEqual(rows[0].text, "7 min 🚃 Wynyard via St Leonards 06:37")
+        XCTAssertEqual(rows[1].text, "14 min 🚃 Town Hall 06:44")
       }
 }
 
 // MARK: - rapidJSON parsing
 
 final class NSWTrainParsingTests: XCTestCase {
+
+    func testJourneyParserUsesFirstTrainLegFromAshfieldToWynyard() throws {
+        let json = """
+          {"journeys":[
+            {"legs":[
+              {"origin":{"name":"Ashfield Station, Ashfield"},
+               "destination":{"name":"Ashfield Station, Platform 3, Ashfield"},
+               "transportation":{"product":{"class":99}}},
+              {"origin":{"name":"Ashfield Station, Platform 3, Ashfield",
+                         "departureTimeEstimated":"2026-08-30T10:51:00Z",
+                         "departureTimePlanned":"2026-08-30T10:49:00Z"},
+               "destination":{"name":"Wynyard Station, Platform 4, Sydney"},
+               "transportation":{"product":{"class":1},
+                                 "destination":{"name":"Lindfield"}},
+               "stopSequence":[
+                 {"name":"Ashfield Station, Platform 3, Ashfield"},
+                 {"name":"Redfern Station, Platform 5, Eveleigh"},
+                 {"name":"Wynyard Station, Platform 4, Sydney"}
+               ]}]},
+            {"legs":[
+              {"origin":{"name":"Ashfield Station, Platform 3, Ashfield",
+                         "departureTimePlanned":"2026-08-30T10:54:00Z"},
+               "destination":{"name":"Wynyard Station, Platform 4, Sydney"},
+               "transportation":{"product":{"class":1},
+                                 "destination":{"name":"Hornsby via Gordon"}}}]},
+            {"legs":[
+              {"origin":{"name":"Ashfield Station, Stand A, Ashfield",
+                         "departureTimePlanned":"2026-08-30T10:55:00Z"},
+               "destination":{"name":"Wynyard Station, Sydney"},
+               "transportation":{"product":{"class":5},
+                                 "destination":{"name":"Wynyard"}}}]}
+          ]}
+          """
+        let arrivals = NSWTrainClient.parseJourneyDepartures(try decode(json))
+        XCTAssertEqual(arrivals.count, 2)
+        XCTAssertEqual(arrivals[0], NSWTrainArrival(destination: "Lindfield", departure: utc("2026-08-30T10:51:00Z")))
+        XCTAssertEqual(arrivals[1], NSWTrainArrival(destination: "Hornsby via Gordon", departure: utc("2026-08-30T10:54:00Z")))
+    }
 
     func testTrainsOnlyAndPrefersEstimatedTime() throws {
         let json = """
@@ -141,23 +219,48 @@ final class NSWTrainConfigTests: XCTestCase {
         XCTAssertEqual(d.pollIntervalSeconds, 60)
         XCTAssertEqual(d.staleAfterSeconds, 600)
         XCTAssertEqual(d.stopID, "")
+        XCTAssertEqual(d.destinationStation, "Wynyard")
+        XCTAssertEqual(d.destinationStopID, NSWTrainConfig.wynyardStopID)
         XCTAssertEqual(NSWTrainConfig.ashfieldStopID, "213110")
-        XCTAssertEqual(d.destinationAllowlist, ["Wynyard", "Central", "Town Hall", "Circular Quay", "Barangaroo"])
+        XCTAssertEqual(NSWTrainConfig.wynyardStopID, "200080")
+        XCTAssertEqual(d.destinationAllowlist, [
+            "Wynyard",
+            "Central",
+            "Town Hall",
+            "Circular Quay",
+            "Barangaroo",
+            "City Circle",
+            "Museum",
+            "St James",
+            "Martin Place",
+            "North Sydney",
+            "Chatswood",
+            "Lindfield",
+            "Gordon",
+            "Hornsby via Gordon",
+            "Hornsby via Lindfield",
+            "Berowra via Gordon",
+        ])
       }
 
     func testEnvOverridesJSONOverridesDefault() throws {
         let json = """
           {"nswTrain":{"enabled":true,"apiKey":"from-json","stopID":"999",
+            "destinationStation":"Town Hall","destinationStopID":"200060",
             "destinationAllowlist":["Wynyard","Glebe"],"pollIntervalSeconds":90,"staleAfterSeconds":120}}
           """
         let obj = try decode(json)
-        var env = ["NSW_TRAIN_API_KEY": "from-env", "NSW_TRAIN_POLL_INTERVAL": "30"]
+        var env = ["NSW_TRAIN_API_KEY": "from-env",
+                   "NSW_TRAIN_POLL_INTERVAL": "30",
+                   "NSW_TRAIN_DESTINATION_STOP_ID": NSWTrainConfig.wynyardStopID]
 
          // Env wins over the JSON block.
         var cfg = Config.parseNSWTrain(obj, environment: env, mockMode: false)
         XCTAssertEqual(cfg.apiKey, "from-env")
         XCTAssertEqual(cfg.pollIntervalSeconds, 30)
         XCTAssertEqual(cfg.stopID, "999")
+        XCTAssertEqual(cfg.destinationStation, "Town Hall")
+        XCTAssertEqual(cfg.destinationStopID, NSWTrainConfig.wynyardStopID)
         XCTAssertEqual(cfg.destinationAllowlist, ["Wynyard", "Glebe"])
         XCTAssertEqual(cfg.staleAfterSeconds, 120)
 
@@ -166,6 +269,8 @@ final class NSWTrainConfigTests: XCTestCase {
         cfg = Config.parseNSWTrain(obj, environment: env, mockMode: false)
         XCTAssertEqual(cfg.apiKey, "from-json")
         XCTAssertEqual(cfg.pollIntervalSeconds, 90)
+        XCTAssertEqual(cfg.destinationStation, "Town Hall")
+        XCTAssertEqual(cfg.destinationStopID, "200060")
       }
 
     func testMockModeForcesPollIntervalToZeroUnlessEnv() throws {
@@ -188,6 +293,8 @@ final class NSWTrainConfigTests: XCTestCase {
         let cfg = Config.parseNSWTrain(try decode(broken), environment: [:], mockMode: false)
         XCTAssertEqual(cfg.pollIntervalSeconds, 60)
         XCTAssertEqual(cfg.staleAfterSeconds, 600)
+        XCTAssertEqual(cfg.destinationStation, "Wynyard")
+        XCTAssertEqual(cfg.destinationStopID, NSWTrainConfig.wynyardStopID)
         XCTAssertEqual(cfg.destinationAllowlist, NSWTrainConfig.default.destinationAllowlist)
       }
 }
@@ -201,7 +308,8 @@ final class NSWTrainControllerTests: XCTestCase {
                                 stale: TimeInterval = 1000) -> (NSWTrainController, MockNSWTrainClient) {
          // Poll interval 0 keeps the scheduler inert; we drive `poll()` by hand.
         let cfg = NSWTrainConfig(apiKey: "k", enabled: true, stopID: "213110",
-                                 destinationAllowlist: ["Wynyard", "Central", "Town Hall"],
+                                 destinationStopID: NSWTrainConfig.wynyardStopID,
+                                 destinationAllowlist: [],
                                  pollIntervalSeconds: 0, staleAfterSeconds: stale)
         let mock = MockNSWTrainClient(resolvedStopID: "213110", seed: seed)
         let c = NSWTrainController(config: cfg, client: mock, scheduler: ManualIdleScheduler())
@@ -217,9 +325,9 @@ final class NSWTrainControllerTests: XCTestCase {
     func testPollLoadsNextTwo() async {
         let now = utc("2026-08-30T06:30:00Z")
         let seed = [
-             NSWTrainArrival(destination: "Wynyard", departure: now.addingTimeInterval(7 * 60)),
-             NSWTrainArrival(destination: "Town Hall", departure: now.addingTimeInterval(14 * 60)),
-             NSWTrainArrival(destination: "Glebe via Ashfield", departure: now.addingTimeInterval(3 * 60)),     // excluded
+             NSWTrainArrival(destination: "Lindfield", departure: now.addingTimeInterval(7 * 60)),
+             NSWTrainArrival(destination: "Hornsby via Gordon", departure: now.addingTimeInterval(14 * 60)),
+             NSWTrainArrival(destination: "Chatswood", departure: now.addingTimeInterval(20 * 60)),     // excluded: outside window
          ]
         let (c, _) = makeController(seed: seed)
         c.setNow { now }
@@ -227,9 +335,9 @@ final class NSWTrainControllerTests: XCTestCase {
         guard case .next(let rows) = c.state else { return XCTFail("expected .next, got \(c.state)") }
         XCTAssertEqual(rows.count, 2)
           // time-zone-independent fields (clockText uses the device locale in the controller).
-        XCTAssertEqual(rows[0].destination, "Wynyard")
+        XCTAssertEqual(rows[0].destination, "Lindfield")
         XCTAssertEqual(rows[0].minutesText, "in 7 min")
-        XCTAssertEqual(rows[1].destination, "Town Hall")
+        XCTAssertEqual(rows[1].destination, "Hornsby via Gordon")
         XCTAssertEqual(rows[1].minutesText, "in 14 min")
       }
 

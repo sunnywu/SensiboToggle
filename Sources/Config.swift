@@ -54,7 +54,7 @@ struct AppConfig: Equatable {
            // disables polling. In mock mode the config layer forces this to 0 unless
            // `SENSIBO_POLL_INTERVAL` is set, so XCUITest stays hermetic.
     var pollIntervalSeconds: Double = 30.0
-             // Next-train arrival banner (Ashfield → the city). The `nswTrain` block lives
+             // Next-train arrival banner (Ashfield → Wynyard). The `nswTrain` block lives
              // in `config/local.config.json`; defaulted to `.default` so every existing
              // `AppConfig(...)` call site keeps compiling unchanged.
     var nswTrain: NSWTrainConfig = .default
@@ -220,10 +220,16 @@ enum Config {
         let enabled = Self.parseBool(env["NSW_TRAIN_ENABLED"])
                      ?? (block?["enabled"] as? Bool)
                      ?? true
-        let originStation = (block?["originStation"] as? String)
-                       ?? env["NSW_TRAIN_ORIGIN"]
+        let originStation = env["NSW_TRAIN_ORIGIN"]
+                       ?? (block?["originStation"] as? String)
                        ?? NSWTrainConfig.default.originStation
         let stopID = env["NSW_TRAIN_STOP_ID"] ?? (block?["stopID"] as? String) ?? ""
+        let destinationStation = env["NSW_TRAIN_DESTINATION"]
+                       ?? (block?["destinationStation"] as? String)
+                       ?? NSWTrainConfig.default.destinationStation
+        let destinationStopID = env["NSW_TRAIN_DESTINATION_STOP_ID"]
+                       ?? (block?["destinationStopID"] as? String)
+                       ?? NSWTrainConfig.default.destinationStopID
         let allowlist = Self.parseStringArray(block?["destinationAllowlist"])
                     ?? NSWTrainConfig.default.destinationAllowlist
 
@@ -248,6 +254,8 @@ enum Config {
                               enabled: enabled,
                               originStation: originStation,
                               stopID: stopID,
+                              destinationStation: destinationStation,
+                              destinationStopID: destinationStopID,
                               destinationAllowlist: allowlist,
                               pollIntervalSeconds: pollIntervalSeconds,
                               staleAfterSeconds: staleAfterSeconds)

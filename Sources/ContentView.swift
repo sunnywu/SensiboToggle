@@ -105,7 +105,7 @@ struct ContentView: View {
              !controller.isReady && controller.error == nil
       }
         // --- Bottom-pinned next-train banner -------------------------------
-        // Always visible via `.safeAreaInset`, so the user sees the next city
+        // Always visible via `.safeAreaInset`, so the user sees the next Wynyard
         // trains without scrolling. Hidden entirely when the banner isn't configured.
      @ViewBuilder
     private var trainFooter: some View {
@@ -119,13 +119,15 @@ struct ContentView: View {
                   .frame(maxWidth: .infinity, alignment: .leading)
                   .padding(.horizontal, 14)
                   .padding(.vertical, 6)
+                  .padding(.bottom, 8)
         case .empty:
-            Text("No city train in next 15 min")
+            Text("No Wynyard train in next 15 min")
                   .font(.subheadline)
                   .foregroundColor(.secondary)
                   .frame(maxWidth: .infinity, alignment: .leading)
                   .padding(.horizontal, 14)
                   .padding(.vertical, 6)
+                  .padding(.bottom, 8)
         case .stale:
             Text("Train times unavailable")
                   .font(.subheadline)
@@ -133,22 +135,46 @@ struct ContentView: View {
                   .frame(maxWidth: .infinity, alignment: .leading)
                   .padding(.horizontal, 14)
                   .padding(.vertical, 6)
+                  .padding(.bottom, 8)
         case .next(let rows):
             VStack(alignment: .leading, spacing: 3) {
                 ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
-                    Text(row.text)
-                          .font(.body)
-                          .monospacedDigit()
-                       .lineLimit(1)
-                       .minimumScaleFactor(0.62)
-                          .frame(maxWidth: .infinity, alignment: .leading)
+                    TrainDepartureLine(row: row)
                 }
               }
               .padding(.horizontal, 14)
               .padding(.vertical, 6)
+              .padding(.bottom, 8)
           }
       }
 
+}
+
+private struct TrainDepartureLine: View {
+    let row: NSWTrainDisplayRow
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Text(row.leadMinutesText)
+                .font(.body.weight(.bold))
+                .monospacedDigit()
+                .foregroundColor(row.isImminent ? .orange : .primary)
+                .frame(width: 64, alignment: .leading)
+            Text("🚃")
+                .font(.body)
+            Text(row.destination)
+                .font(.body)
+                .lineLimit(1)
+                .minimumScaleFactor(0.72)
+                .layoutPriority(1)
+            Spacer(minLength: 6)
+            Text(row.clockText)
+                .font(.body)
+                .monospacedDigit()
+                .foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
 }
 
 /// Full-bleed opaque black view shown while the panel is idle. The controller

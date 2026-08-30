@@ -5,9 +5,10 @@ import SwiftUI
 //
 // `@MainActor` + `ObservableObject`, poll-driven (mirrors `ACController` + `TapoController`:
 // state is `@Published`, a background timer drives refresh, and the UI just reflects it).
-// The heavy lifting — city matching, next-2 selection, minute formatting — lives in the
-// pure functions in `NSWTrainModels.swift`, so this file is just the *state machine* that
-// turns "polls come and go" into one of `.hidden / .loading / .next / .empty / .stale`.
+// The heavy lifting — next-2 selection, minute formatting, and fallback city matching
+// — lives in the pure functions in `NSWTrainModels.swift`, so this file is just the
+// state machine that turns "polls come and go" into one of `.hidden / .loading / .next
+// / .empty / .stale`.
 //
 // Invariants:
 //      - **Never touch a real train or the AC.** This only *reads* TfNSW.
@@ -37,6 +38,7 @@ final class NSWTrainController: ObservableObject {
 
     private var stopID: String = ""                // resolved exactly once at startup
     private var hasResolvedStop = false
+    private var destinationStopID: String = ""     // non-empty → use TfNSW trip endpoint
     private var hasEverSucceeded = false
     private var lastGoodDate: Date? = nil
     private var pollTimer: (any IdleTimer)? = nil
@@ -134,16 +136,25 @@ final class NSWTrainController: ObservableObject {
              }
 
         do {
-            let arrivals = try await self.client.departures(stopID: self.stopID)
+            let arrivals: [NSWTrainArrival]
+            let rows: [NSWTrainDisplayRow]
+            if !self.destinationStopID.isEmpty {
+                arrivals = try await self.client.journeyDepartures(
+                    originStopID: self.stopID,
+                    destinationStopID: self.destinationStopID)
+                rows = NSWTrainSelection.displayRows(from: arrivals, now: now)
+             } else {
+                arrivals = try await self.client.departures(stopID: self.stopID)
+                rows = NSWTrainSelection.displayRows(
+                    from: arrivals,
+                    allowlist: self.config.destinationAllowlist,
+                    now: now)
+             }
             self.hasEverSucceeded = true
             self.lastGoodDate = now
             self.lastError = nil
             self.isReady = true
              // Rows are computed at `now`, so "in N min" refreshes on every poll.
-            let rows = NSWTrainSelection.displayRows(
-                from: arrivals,
-                allowlist: self.config.destinationAllowlist,
-                now: now)
             self.state = rows.isEmpty ? .empty : .next(rows)
             } catch {
             self.lastError = (error as? NSWTrainError)?.localizedDescription
@@ -169,20 +180,17 @@ final class NSWTrainController: ObservableObject {
             let resolved = try? await self.client.resolveStopID(name: self.config.originStation)
             self.stopID = resolved ?? NSWTrainConfig.ashfieldStopID
             }
+        self.destinationStopID = self.config.destinationStopID
         }
 
-        /// A near-future, city-bound seed for the *mock-mode* banner: a couple of trains
-          /// toward the CBD (Wynyard, Town Hall) plus one *outbound* train that is NOT
-          /// city-bound, so the demo exercises city-matching + next-2 selection. Returned
+        /// A near-future Ashfield → Wynyard seed for the *mock-mode* banner. Returned
           /// departures are absolute, computed relative to "now" at call time.
       @MainActor
     static func demoSeed() -> [NSWTrainArrival] {
         let now = Date()
         return [
-            NSWTrainArrival(destination: "Wynyard", departure: now.addingTimeInterval(7 * 60)),
-            NSWTrainArrival(destination: "Town Hall via St Leonards & Randwick", departure: now.addingTimeInterval(14 * 60)),
-                  // Outbound, not city-bound: excluded from the banner by the selector.
-            NSWTrainArrival(destination: "Glebe via Ashfield", departure: now.addingTimeInterval(3 * 60)),
+            NSWTrainArrival(destination: "Lindfield", departure: now.addingTimeInterval(7 * 60)),
+            NSWTrainArrival(destination: "Hornsby via Gordon", departure: now.addingTimeInterval(14 * 60)),
             ]
           }
 

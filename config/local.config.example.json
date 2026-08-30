@@ -25,6 +25,8 @@
       "enabled": true,
       "originStation": "Ashfield",
       "stopID": "",
+      "destinationStation": "Wynyard",
+      "destinationStopID": "200080",
       "destinationAllowlist": [
          "Wynyard",
          "Central",

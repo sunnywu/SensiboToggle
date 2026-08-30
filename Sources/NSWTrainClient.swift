@@ -6,17 +6,20 @@ import Foundation
 // `URLSession`, decoding with `JSONSerialization` (no Codable), and a protocol so
 // the UI + controller depend on an abstraction and tests can substitute a mock.
 //
-// Two endpoints:
+// Three endpoints:
 //    - `stop_finder`     → resolves "Ashfield" to a TfNSW stop id (once, at startup)
-//    - `departure_mon`    → the live/upcoming departure board (polled each minute)
+//    - `trip`            → Ashfield → Wynyard journeys, so TfNSW filters the route
+//    - `departure_mon`   → old fallback departure board path
 //
 // Auth is a *custom* scheme — `Authorization: apikey <key>` — not `Bearer` (which 401s).
 
 protocol NSWTrainClientProtocol: Sendable {
        /// Resolve `name` (e.g. "Ashfield") to a TfNSW stop id. Returns the best stop.
      func resolveStopID(name: String) async throws -> String
-       /// The raw, *train-only* upcoming departures at `stopID` (all destinations; the
-       /// controller does the city-bound matching).
+       /// Train journeys from `originStopID` that reach `destinationStopID`.
+     func journeyDepartures(originStopID: String, destinationStopID: String) async throws -> [NSWTrainArrival]
+       /// The raw, *train-only* upcoming departures at `stopID` (all destinations). Used
+       /// only as a fallback when no target destination stop is configured.
      func departures(stopID: String) async throws -> [NSWTrainArrival]
 }
 
@@ -95,6 +98,53 @@ final class NSWTrainClient: NSWTrainClientProtocol, Sendable {
         throw NSWTrainError.noStop
           }
 
+       // MARK: trip → route-filtered train arrivals
+
+    func journeyDepartures(originStopID: String, destinationStopID: String) async throws -> [NSWTrainArrival] {
+        let now = Date()
+        let query = [
+             ("outputFormat", "rapidJSON"),
+             ("coordOutputFormat", "EPSG:4326"),
+             ("depArrMacro", "dep"),
+             ("itdDate", Self.itdDate(now)),
+             ("itdTime", Self.itdTime(now)),
+             ("type_origin", "stop"),
+             ("name_origin", originStopID),
+             ("type_destination", "stop"),
+             ("name_destination", destinationStopID),
+             ("calcNumberOfTrips", "5"),
+             ("TfNSWTR", "true"),
+          ]
+        let url = self.queryURL(path: "/trip", query: query)
+        let obj = try await self.getJSON(url: url)
+        return Self.parseJourneyDepartures(obj)
+            }
+
+        /// Parse a rapidJSON `journeys` payload into the first train leg of each journey.
+        /// The `/trip` query already constrains the path to Ashfield → Wynyard, so this
+        /// parser does not guess from destination text.
+    static func parseJourneyDepartures(_ obj: [String: Any]) -> [NSWTrainArrival] {
+        guard let journeys = obj["journeys"] as? [Any] else { return [] }
+        var arrivals: [NSWTrainArrival] = []
+        var seen = Set<NSWTrainArrival>()
+        for entry in journeys {
+            guard let journey = entry as? [String: Any],
+                  let legs = journey["legs"] as? [Any]
+            else { continue }
+            guard let trainLeg = legs.compactMap({ $0 as? [String: Any] }).first(where: Self.isTrainLeg) else { continue }
+            guard let origin = trainLeg["origin"] as? [String: Any],
+                  let departure = Self.readDeparture(origin)
+            else { continue }
+            let destination = Self.readJourneyDisplayDestination(trainLeg)
+            guard !destination.isEmpty else { continue }
+            let arrival = NSWTrainArrival(destination: destination, departure: departure)
+            if seen.insert(arrival).inserted {
+                arrivals.append(arrival)
+             }
+           }
+        return arrivals
+           }
+
        // MARK: departure_mon → train-only arrivals
 
     func departures(stopID: String) async throws -> [NSWTrainArrival] {
@@ -149,6 +199,21 @@ final class NSWTrainClient: NSWTrainClientProtocol, Sendable {
     private static func readDestination(_ transportation: [String: Any]) -> String {
         guard let destination = transportation["destination"] as? [String: Any] else { return "" }
         return (destination["name"] as? String).map { $0.isEmpty ? "" : $0 } ?? ""
+          }
+
+    private static func readJourneyDisplayDestination(_ leg: [String: Any]) -> String {
+        if let transportation = leg["transportation"] as? [String: Any] {
+            let serviceDestination = Self.readDestination(transportation)
+            if !serviceDestination.isEmpty { return serviceDestination }
+         }
+        guard let destination = leg["destination"] as? [String: Any] else { return "" }
+        return (destination["name"] as? String).map { $0.isEmpty ? "" : $0 } ?? ""
+          }
+
+    private static func isTrainLeg(_ leg: [String: Any]) -> Bool {
+        guard let transportation = leg["transportation"] as? [String: Any] else { return false }
+        let productClass = (transportation["product"] as? [String: Any])?["class"] as? Int
+        return productClass == NSWTrainSelection.trainProductClass
           }
 
        /// ISO-8601 with a trailing "Z" (UTC), e.g. "2026-08-30T06:32:00Z". A fresh
@@ -231,6 +296,14 @@ final class MockNSWTrainClient: NSWTrainClientProtocol {
       }
 
     func departures(stopID: String) async throws -> [NSWTrainArrival] {
+        try self.seedOrThrow()
+      }
+
+    func journeyDepartures(originStopID: String, destinationStopID: String) async throws -> [NSWTrainArrival] {
+        try self.seedOrThrow()
+      }
+
+    private func seedOrThrow() throws -> [NSWTrainArrival] {
         if self.outstandingFailures > 0 {
             self.outstandingFailures -= 1
             throw NSWTrainError.transport("simulated outage")

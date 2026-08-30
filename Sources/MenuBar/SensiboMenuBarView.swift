@@ -114,7 +114,7 @@ struct SensiboMenuBarView: View {
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity)
         case .empty:
-            Text("No city train in next 15 min")
+            Text("No Wynyard train in next 15 min")
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity)
@@ -129,12 +129,31 @@ struct SensiboMenuBarView: View {
                     .font(.caption2)
                     .foregroundColor(.secondary)
                 ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
-                    Text(row.text)
-                        .font(.body)
-                        .monospacedDigit()
+                    MenuTrainDepartureLine(row: row)
                 }
             }
         }
     }
 
+}
+
+private struct MenuTrainDepartureLine: View {
+    let row: NSWTrainDisplayRow
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Text(row.leadMinutesText)
+                .font(.body.weight(.bold))
+                .monospacedDigit()
+                .foregroundColor(row.isImminent ? .orange : .primary)
+                .frame(width: 58, alignment: .leading)
+            Text("🚃")
+            Text(row.destination)
+                .lineLimit(1)
+            Spacer(minLength: 4)
+            Text(row.clockText)
+                .monospacedDigit()
+                .foregroundColor(.secondary)
+        }
+    }
 }
